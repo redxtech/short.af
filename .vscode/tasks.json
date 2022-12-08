@@ -4,12 +4,12 @@
     {
       "label": "run",
       "type": "shell",
-      "command": "deno run --allow-env --allow-net src/main.ts"
+      "command": "deno run --allow-env --allow-net --allow-read --allow-write src/main.ts"
     },
     {
       "label": "run dev",
       "type": "shell",
-      "command": "denon run --allow-env --allow-net src/main.ts"
+      "command": "denon run --allow-env --allow-net --allow-read --allow-write src/main.ts"
     }
   ]
 }

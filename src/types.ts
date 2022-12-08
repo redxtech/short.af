@@ -23,13 +23,17 @@ export type WebhookData = {
 	location?: Record<string, string | undefined>
 }
 
+// database types
+export type DBShortcut = boolean
+
 // schema for redirects list
-export type Redirects = {
+export type Redirect = {
 	from: string
 	to: string
-}[]
+	yoink?: boolean
+}
 
-// scheme for enabled data points configuration
+// schema for enabled data points configuration
 export type EnabledDataPoints = {
 	ip: boolean,
 	method: boolean,

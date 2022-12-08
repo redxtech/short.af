@@ -3,7 +3,8 @@ import { EmbedField } from 'https://deno.land/x/discord_webhook@1.0.0/src/EmbedS
 
 import { WebhookData } from './types.ts'
 
-import { enabled, links, webhookURL } from '../config.ts'
+import { enabled, webhookURL } from '../config.ts'
+import { getShortcut } from './db.ts'
 
 // send discord webhook
 export const sendWebhook = async (data: WebhookData): Promise<void> => {
@@ -45,7 +46,7 @@ export const sendWebhook = async (data: WebhookData): Promise<void> => {
 	// get shortcut and destination if they exist
 	const url = new URL(data.url)
 	const shortcut: string = url.pathname.substring(url.pathname.indexOf('/') + 1)
-	const redirect = links.find(l => l.from === shortcut)
+	const redirect = await getShortcut(shortcut)
 	if (enabled.redirect && redirect) {
 		fields.push({
 			name: 'Shortcut',

@@ -2,9 +2,18 @@
 
 import { ConnInfo } from "https://deno.land/std@0.167.0/http/server.ts";
 import { sendWebhook } from "./webhook.ts";
-import { WebhookData } from "./types.ts";
-import { links } from "../config.ts";
+import { Redirect, WebhookData } from "./types.ts";
+import { addShortcut, getShortcut } from "./db.ts";
 
+const isValidHttpUrl = (str: string) => {
+  let url;
+  try {
+    url = new URL(str);
+  } catch (_) {
+    return false;
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
 
 // assert that the address is a network address instead of a unix address
 function assertIsNetAddr(addr: Deno.Addr): asserts addr is Deno.NetAddr {
@@ -19,11 +28,40 @@ const getRemoteAddress = (connInfo: ConnInfo): Deno.NetAddr => {
   return connInfo.remoteAddr;
 }
 
-// server handler function
-export const handler = async (request: Request, connInfo: ConnInfo): Promise<Response> => {
-	// only send webhook if not favicon
-	const url = new URL(request.url);
-	if (!/favicon.ico/.test(url.pathname)) {
+// handle GET /
+const handleHome = (): Response => new Response('hello friend\n', { status: 200 })
+
+// handle GET /expand/:shortcut
+const handleExpand = (redirect: Redirect): Response => new Response(redirect.to, { status: 200 })
+
+// handle POST /shorten
+const handleShorten = async (shortcut: Redirect): Promise<Response> => {
+	// test if shortcut exists
+	const redirect = await getShortcut(shortcut.from)
+
+	// if the redirect doesn't already exist, create it, otherwise throw error
+	if (!redirect) {
+		const added = await addShortcut(shortcut)
+		// if succesfully added, respond with 201, otherwise fail with 400
+		if (added) {
+			return new Response(shortcut.to, { status: 201 })
+		} else {
+			return new Response('failed to create shortcut', { status: 400 })
+		}
+	} else {
+		return new Response('already exists', { status: 422 })
+	}
+}
+
+// handle POST /update
+// TODO haha do this later
+
+// handle GET /:shortcut
+const handleShortcut = async (redirect: Redirect, request: Request, connInfo: ConnInfo): Promise<Response> => {
+	// only grab ip if enabled
+	if (redirect?.yoink) {
+		console.log('yoinking...')
+
 		// get the connected ip address
 		const { hostname: ip } = getRemoteAddress(connInfo);
 
@@ -71,17 +109,49 @@ export const handler = async (request: Request, connInfo: ConnInfo): Promise<Res
 		sendWebhook(data);
 	}
 
-	// get shortcut and destination if they exist
-	const shortcut: string = url.pathname.substring(url.pathname.indexOf('/') + 1)
-	const redirect = links.find(l => l.from === shortcut)
+	// respond with the redirect
+	return Response.redirect(redirect.to, 302)
+}
 
-	// if a shortcut exists, redirect to it
-	if (redirect) {
-		return Response.redirect(redirect.to, 302)
+// handle 404
+const notFound = (): Response => {
+	return new Response('404 not found', { status: 404 })
+}
+
+// server handler function
+export const handler = async (request: Request, connInfo: ConnInfo): Promise<Response> => {
+	// different handlers for different endpoints
+	const url = new URL(request.url)
+	if (url.pathname === '/') {
+		// serve a simple homepage
+		return handleHome()
+	} else if (url.pathname.startsWith('/shorten/')) {
+		// split path on | for from & to
+		const [from, to] = url.pathname.replace('/shorten/', '').split('%7C')
+		
+		// if both were valid, otherwise return 400
+		if (from && isValidHttpUrl(to)) {
+			return handleShorten({ from, to })
+		} else {
+			return new Response('invalid values', { status: 400 })
+		}
 	} else {
-		// respond with the same body regardless of request
-		const body = 'hello friend\n';
+		// for for all other paths, check if there's a shortcut
+		const path = url.pathname
+		const isExpand = path.startsWith('/expand/')
+		const shortcut = isExpand
+			? path.replace('/expand/', '')
+			: path.substring(url.pathname.indexOf('/') + 1)
+		const redirect = await getShortcut(shortcut)
 
-		return new Response(body, { status: 200 });
+		// test if there's a shortcut, otherwise, show not found
+		if (redirect) {
+			if (isExpand) {
+				return handleExpand(redirect)
+			}
+			return await handleShortcut(redirect, request, connInfo)
+		} else {
+			return notFound()
+		}
 	}
-};
+}
