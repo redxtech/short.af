@@ -3,39 +3,50 @@ import { EmbedField } from 'https://deno.land/x/discord_webhook@1.0.0/src/EmbedS
 
 import { WebhookData } from './types.ts'
 
-import { links, webhookURL } from '../config.ts'
+import { enabled, links, webhookURL } from '../config.ts'
 
 // send discord webhook
 export const sendWebhook = async (data: WebhookData): Promise<void> => {
-	const fields: EmbedField[] = [
-		// these will always be there
-		{
+	// create  the list to push the fields into
+	const fields: EmbedField[] = []
+
+	// standard data points
+	if (enabled.ip) {
+		fields.push({
 			name: 'IP',
 			value: data.forwarded?.ip || data.ip
-		},
-		{
+		})
+	}
+	if (enabled.method) {
+		fields.push({
 			name: 'Method',
 			value: data.method
-		},
-		{
+		})
+	}
+	if (enabled.url) {
+		fields.push({
 			name: 'URL',
 			value: data.url
-		},
-		{
+		})
+	}
+	if (enabled.ua) {
+		fields.push({
 			name: 'User Agent',
 			value: data.useragent
-		},
-		{
+		})
+	}
+	if (enabled.host) {
+		fields.push({
 			name: 'Host',
 			value: data.host
-		}
-	]
+		})
+	}
 
 	// get shortcut and destination if they exist
 	const url = new URL(data.url)
 	const shortcut: string = url.pathname.substring(url.pathname.indexOf('/') + 1)
 	const redirect = links.find(l => l.from === shortcut)
-	if (redirect) {
+	if (enabled.redirect && redirect) {
 		fields.push({
 			name: 'Shortcut',
 			value: `/${shortcut} => ${redirect.to}`
@@ -43,19 +54,19 @@ export const sendWebhook = async (data: WebhookData): Promise<void> => {
 	}
 
 	// add optional data
-	if (data.dnt) {
+	if (enabled.dnt && data.dnt) {
 		fields.push({
 			name: 'Do Not Track',
 			value: data.dnt === '1' ? 'True' : 'False',
 		})
 	}
-	if (data.upgrade) {
+	if (enabled.upgrade && data.upgrade) {
 		fields.push({
 			name: 'HTTPS Upgrade',
 			value: data.upgrade === '1' ? 'True' : 'False'
 		})
 	}
-	if (data.redirect) {
+	if (enabled.redirect && data.redirect) {
 		fields.push({
 			name: 'Redirect',
 			value: data.redirect
@@ -64,31 +75,31 @@ export const sendWebhook = async (data: WebhookData): Promise<void> => {
 
 	// add forwarded data
 	if (data.forwarded) {
-		if (data.forwarded.ip) {
+		if (enabled.ip && data.forwarded.ip) {
 			fields.push({
 				name: 'X-Real-IP',
 				value: data.forwarded.ip
 			})
 		}
-		if (data.forwarded.for) {
+		if (enabled.forwarded?.for && data.forwarded.for) {
 			fields.push({
 				name: 'X-Forwarded-For',
 				value: data.forwarded.for
 			})
 		}
-		if (data.forwarded.host) {
+		if (enabled.forwarded?.host && data.forwarded.host) {
 			fields.push({
 				name: 'X-Forwarded-Host',
 				value: data.forwarded.host
 			})
 		}
-		if (data.forwarded.proto) {
+		if (enabled.forwarded?.proto && data.forwarded.proto) {
 			fields.push({
 				name: 'X-Forwarded-Proto',
 				value: data.forwarded.proto
 			})
 		}
-		if (data.forwarded.scheme) {
+		if (enabled.forwarded?.scheme && data.forwarded.scheme) {
 			fields.push({
 				name: 'X-Forwarded-Scheme',
 				value: data.forwarded.scheme
@@ -101,13 +112,13 @@ export const sendWebhook = async (data: WebhookData): Promise<void> => {
 		? { text: `Location: ${data.location.city}, ${data.location.regionName}, ${data.location.country}` }
 		: undefined
 	if (location) {
-		if (data.location?.isp) {
+		if (enabled.location?.isp && data.location?.isp) {
 			fields.push({
 				name: 'ISP',
 				value: data.location?.isp
 			})
 		}
-		if (data.location?.timezone) {
+		if (enabled.location?.timezone && data.location?.timezone) {
 			fields.push({
 				name: 'Timezone',
 				value: data.location?.timezone

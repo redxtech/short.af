@@ -23,7 +23,32 @@ export type WebhookData = {
 	location?: Record<string, string | undefined>
 }
 
+// schema for redirects list
 export type Redirects = {
 	from: string
 	to: string
 }[]
+
+// scheme for enabled data points configuration
+export type EnabledDataPoints = {
+	ip: boolean,
+	method: boolean,
+	url: boolean,
+	ua: boolean,
+	host: boolean,
+	shortcut: boolean,
+	dnt: boolean,
+	upgrade: boolean,
+	redirect: boolean,
+	forwarded: {
+		for: boolean,
+		host: boolean,
+		proto: boolean,
+		scheme: boolean
+	},
+	location:{
+		isp: boolean,
+		timezone: boolean
+	}
+}
+
