@@ -17,7 +17,7 @@ will 302 redirect you to the destination if it exists, and 404 otherwise
 will show destination in plaintext if it exists, and 404 otherwise
 
 ### `GET /shorten/:from|to`
-will create a shortened link, shortcut and abbreviation must be separated by a "|" ("%7C"), will respond with 201 on successful add, 422 if a link with that same name already exists, and 400 for other failures
+will create a shortened link, shortcut and abbreviation must be separated by a `"|"` (`"%7C"`), will respond with 201 on successful add, 422 if a link with that same name already exists, and 400 for other failures
 
 ### `GET /shorten/:from|to|token`
 passing the admin token will create a shortened link with yoinking enabled
