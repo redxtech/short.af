@@ -8,6 +8,11 @@ you can run the app after configuring your discord webhook url and admin token, 
 
 you should be able to run it with `deno run ./src/main.ts`, or to pass all permissions, `deno run --allow-env --allow-net --allow-read --allow-write ./src/main.ts`.
 
+### docker
+i've build a dockerfile and a compose file for easy running. `docker compose up --build` in the should start it up. `docker compose up --build -d` will detach from the log. bring it down with `docker compose down`.
+
+the database uses a file to store the data `database.json`, so keep that in mind when setting up your docker mounts.
+
 ## endpoints
 
 ### `GET /:from`
