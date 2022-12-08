@@ -1,1 +1,5 @@
 config.ts
+database.json
+package.json
+node_modules
+yarn.lock
