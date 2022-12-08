@@ -121,6 +121,11 @@ const handleShortcut = async (redirect: Redirect, request: Request, connInfo: Co
 	return Response.redirect(redirect.to, 302)
 }
 
+// we do some trolling
+const handleTroll = (): Response => {
+	return new Response(';)', { status: 418 })
+}
+
 // handle 404
 const notFound = (): Response => {
 	return new Response('404 not found', { status: 404 })
@@ -143,6 +148,8 @@ export const handler = async (request: Request, connInfo: ConnInfo): Promise<Res
 		} else {
 			return new Response('invalid values', { status: 400 })
 		}
+	} else if (url.pathname.startsWith('/.htaccess')) {
+		return handleTroll()
 	} else {
 		// for for all other paths, check if there's a shortcut
 		const path = url.pathname
