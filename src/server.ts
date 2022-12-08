@@ -5,6 +5,7 @@ import { sendWebhook } from "./webhook.ts";
 import { Redirect, WebhookData } from "./types.ts";
 import { addShortcut, getShortcut } from "./db.ts";
 
+// check if a string is a valid url
 const isValidHttpUrl = (str: string) => {
   let url;
   try {
@@ -29,7 +30,14 @@ const getRemoteAddress = (connInfo: ConnInfo): Deno.NetAddr => {
 }
 
 // handle GET /
-const handleHome = (): Response => new Response('hello friend\n', { status: 200 })
+const handleHome = (): Response => {
+	return new Response(Deno.readFileSync(Deno.cwd() + '/src/index.html'), {
+		status: 200,
+		headers: {
+			'content-type': 'text/html; charset=utf-8'
+		}
+	})
+}
 
 // handle GET /expand/:shortcut
 const handleExpand = (redirect: Redirect): Response => new Response(redirect.to, { status: 200 })
@@ -40,7 +48,7 @@ const handleShorten = async (shortcut: Redirect): Promise<Response> => {
 	const redirect = await getShortcut(shortcut.from)
 
 	// if the redirect doesn't already exist, create it, otherwise throw error
-	if (!redirect) {
+	if (!redirect && !['shorten', 'expand'].some(s => shortcut.from.startsWith(`/${s}/`))) {
 		const added = await addShortcut(shortcut)
 		// if succesfully added, respond with 201, otherwise fail with 400
 		if (added) {

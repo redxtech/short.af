@@ -1,0 +1,57 @@
+<?<html>
+	<head>
+		<title>shawt af baby</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+	</head>
+	<body>
+		<div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+			<div class="mx-auto max-w-3xl">
+				<h1 class="text-3xl font-bold">short.af</h1>
+			</div>
+		</div>
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<div class="mx-auto max-w-3xl">
+				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+					<div class="sm:col-span-4">
+						<label for="from" class="block text-sm font-medium text-gray-700">shortcut</label>
+						<div class="mt-1 flex rounded-md shadow-sm">
+							<span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">short.af/</span>
+							<input type="text" name="from" id="from" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+						</div>
+					</div>
+				</div>
+				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+					<div class="sm:col-span-4">
+						<label for="to" class="block text-sm font-medium text-gray-700">destination</label>
+						<div class="mt-1 flex rounded-md shadow-sm">
+							<input type="text" name="to" id="to" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+						</div>
+					</div>
+				</div>
+				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+					<div class="sm:col-span-4">
+						<button type="submit" id="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">create shortcut</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				document.getElementById('submit').addEventListener('click', () => {
+					const from = document.getElementById('from').value
+					const to = document.getElementById('to').value
+
+					const submit = fetch(`/shorten/${from}|${to}`).then(req => {
+						if (req.status === 201) {
+							window.location = '/expand/' + from
+						} else {
+							window.location = `/shorten/${from}|${to}`
+						}
+					}).catch(console.error)
+				})
+			})
+		</script>
+	</body>
+</html>
