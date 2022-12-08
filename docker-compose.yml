@@ -1,0 +1,8 @@
+version: "2.1"
+services:
+  yoinked:
+    build: .
+    container_name: yoinked
+    ports:
+      - 8080:8080
+    restart: unless-stopped
