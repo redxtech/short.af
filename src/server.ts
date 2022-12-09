@@ -122,8 +122,13 @@ const handleShortcut = async (redirect: Redirect, request: Request, connInfo: Co
 }
 
 // we do some trolling
-const handleTroll = (): Response => {
-	return new Response(';)', { status: 418 })
+const handleTroll = (): Promise<Response> => {
+	// wait 10 seconds, then return i'm a teapot
+	return new Promise(resolve => {
+		setTimeout(() => {
+			resolve(new Response(';)', { status: 418 }))
+		}, 10000)
+	})
 }
 
 // handle 404
