@@ -3,7 +3,7 @@ import { EmbedField } from 'https://deno.land/x/discord_webhook@1.0.0/src/EmbedS
 
 import { WebhookData } from './types.ts'
 
-import { enabled, webhookURL } from '../config/config.ts'
+import { enabled, webhookURL } from '../config.ts'
 import { getShortcut } from './db.ts'
 
 // send discord webhook

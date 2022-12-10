@@ -4,7 +4,7 @@ import { ConnInfo } from "https://deno.land/std@0.167.0/http/server.ts";
 import { sendWebhook } from "./webhook.ts";
 import { Redirect, WebhookData } from "./types.ts";
 import { addShortcut, enableShortcut, getShortcut } from "./db.ts";
-import { token } from "../config/config.ts";
+import { token } from "../config.ts";
 
 // allowed characters for a shortcut
 const allowedCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'

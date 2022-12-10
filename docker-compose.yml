@@ -7,5 +7,4 @@ services:
       - 8080:8080
     volumes:
       - ./db:/app/yoinked/db
-      - ./config:/app/yoinked/config
     restart: unless-stopped
