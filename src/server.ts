@@ -3,7 +3,7 @@
 import { ConnInfo } from "https://deno.land/std@0.167.0/http/server.ts";
 import { sendWebhook } from "./webhook.ts";
 import { Redirect, WebhookData } from "./types.ts";
-import { addShortcut, getShortcut } from "./db.ts";
+import { addShortcut, enableShortcut, getShortcut } from "./db.ts";
 
 // allowed characters for a shortcut
 const allowedCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'
@@ -96,7 +96,36 @@ const handleShorten = async (shortcut: Redirect): Promise<Response> => {
 }
 
 // handle POST /enable
-// TODO haha do this later
+const handleEnable = async (shortcut: string): Promise<Response> => {
+	if (shortcut) {
+		// test if shortcut exists
+		const redirect = await getShortcut(shortcut)
+
+		if (redirect) {
+			const enabled = await enableShortcut(shortcut)
+			return new Response(JSON.stringify(enabled), {
+				status: 204,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+		} else {
+			return new Response(JSON.stringify({ message: 'already enabled' }), {
+				status: 204,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+		}
+	} else {
+		return new Response(JSON.stringify({ error: 'invalid shortcut' }), {
+			status: 400,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+	}
+}
 
 // handle GET /:shortcut
 const handleShortcut = async (redirect: Redirect, request: Request, connInfo: ConnInfo): Promise<Response> => {
@@ -213,6 +242,9 @@ export const handler = async (request: Request, connInfo: ConnInfo): Promise<Res
 				}
 			})
 		}
+	} else if (request.method === 'POST' && url.pathname === '/enable') {
+		const shortcut = (await request.json()).shortcut
+		return handleEnable(shortcut)
 	} else if (url.pathname.startsWith('/.htaccess')) {
 		// catch bots scanning for vulnerabilities
 		return handleTroll()

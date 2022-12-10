@@ -22,6 +22,22 @@ export const addShortcut = async (shortcut: Redirect): Promise<Redirect | undefi
 	}
 }
 
+// enable yoinking for a shortcut
+export const enableShortcut = async (shortcut: string): Promise<Redirect | undefined> => {
+	const update = await db.updateOne({ from: shortcut }, { yoink: true })
+	if (update) {
+		return update
+	}
+}
+
+// disable yoinking for a shortcut
+export const disableShortcut = async (shortcut: string): Promise<Redirect | undefined> => {
+	const update = await db.updateOne({ from: shortcut }, { yoink: false })
+	if (update) {
+		return update
+	}
+}
+
 // change a shortcut in the database
 export const changeShortcut = async (shortcut: Redirect): Promise<Redirect | undefined> => {
 	const update = await db.updateOne({ from: shortcut.from }, { to: shortcut.to })
