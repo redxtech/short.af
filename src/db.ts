@@ -3,7 +3,7 @@ import { Database } from 'https://deno.land/x/aloedb@0.9.0/mod.ts'
 import { Redirect } from "./types.ts";
 
 // initialization
-const db = new Database<Redirect>('database.json');
+const db = new Database<Redirect>('db/database.json');
 
 // query the database for a shortcut
 export const getShortcut = async (shortcut: string): Promise<Redirect | undefined> => {

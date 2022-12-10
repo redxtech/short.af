@@ -3,7 +3,7 @@
 import { serve } from "https://deno.land/std@0.167.0/http/server.ts"
 
 import { handler } from "./server.ts"
-import { port } from '../config.ts'
+import { port } from '../config/config.ts'
 
 // main wrapper function
 const main = async () => {

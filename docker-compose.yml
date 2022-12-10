@@ -6,5 +6,6 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./database.json:/app/yoinked/database.json
+      - ./db:/app/yoinked/db
+      - ./config:/app/yoinked/config
     restart: unless-stopped
