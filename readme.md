@@ -8,6 +8,8 @@ you can run the app after configuring your discord webhook url and admin token, 
 
 you should be able to run it with `deno run ./src/main.ts`, or to pass all permissions, `deno run --allow-env --allow-net --allow-read --allow-write ./src/main.ts`.
 
+you can shorten new urls from the home page (`/`), and enable yoinking on the enabling page (`/enable`)
+
 ### docker
 i've build a dockerfile and a compose file for easy running. `docker compose up --build` in the should start it up. `docker compose up --build -d` will detach from the log. bring it down with `docker compose down`.
 
@@ -27,6 +29,6 @@ will show destination in plaintext if it exists, and 404 otherwise
 ### `POST /shorten`, body: `{ from, to }`
 will create a shortened link, shortcut and abbreviation must be separated by a `"|"` (`"%7C"`), will respond with 201 on successful add, 422 if a link with that same name already exists, and 400 for other failures
 
-### `POST /enable`, body: `{ from, token }`
+### `POST /enable`, body: `{ shortcut, token }`
 will enable yoinking on the selected url if the passeed token matches the configured admin token
 
