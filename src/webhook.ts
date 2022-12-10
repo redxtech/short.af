@@ -47,7 +47,7 @@ export const sendWebhook = async (data: WebhookData): Promise<void> => {
 	const url = new URL(data.url)
 	const shortcut: string = url.pathname.substring(url.pathname.indexOf('/') + 1)
 	const redirect = await getShortcut(shortcut)
-	if (enabled.redirect && redirect) {
+	if (enabled.shortcut && redirect) {
 		fields.push({
 			name: 'Shortcut',
 			value: `/${shortcut} => ${redirect.to}`
