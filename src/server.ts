@@ -5,6 +5,10 @@ import { sendWebhook } from "./webhook.ts";
 import { Redirect, WebhookData } from "./types.ts";
 import { addShortcut, getShortcut } from "./db.ts";
 
+// allowed characters for a shortcut
+const allowedCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'
+const genCharset = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789-_+.'
+
 // check if a string is a valid url
 const isValidHttpUrl = (str: string) => {
   let url;
@@ -14,6 +18,21 @@ const isValidHttpUrl = (str: string) => {
     return false;
   }
   return url.protocol === "http:" || url.protocol === "https:";
+}
+
+// random number generator
+const random = (upTo: number): number => Math.floor(Math.random() * upTo) + 1
+
+// generate random string, excluding I & l
+const randomString = (length: number): string => {
+	const stringBuilder = []
+
+	// push a random character into the string builder
+	for (let i = 0; i < length; i++) {
+		stringBuilder.push(genCharset.charAt(random(genCharset.length)))
+	}
+
+	return stringBuilder.join('')
 }
 
 // assert that the address is a network address instead of a unix address
@@ -52,16 +71,31 @@ const handleShorten = async (shortcut: Redirect): Promise<Response> => {
 		const added = await addShortcut(shortcut)
 		// if succesfully added, respond with 201, otherwise fail with 400
 		if (added) {
-			return new Response(shortcut.to, { status: 201 })
+			return new Response(JSON.stringify(shortcut), {
+				status: 201,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 		} else {
-			return new Response('failed to create shortcut', { status: 400 })
+			return new Response(JSON.stringify({ error: 'failed to create shortcut' }), {
+				status: 400,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 		}
 	} else {
-		return new Response('already exists', { status: 422 })
+		return new Response(JSON.stringify({ error: 'already exists' }), {
+			status: 422,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
 	}
 }
 
-// handle POST /update
+// handle POST /enable
 // TODO haha do this later
 
 // handle GET /:shortcut
@@ -140,20 +174,47 @@ const notFound = (): Response => {
 export const handler = async (request: Request, connInfo: ConnInfo): Promise<Response> => {
 	// different handlers for different endpoints
 	const url = new URL(request.url)
+
 	if (url.pathname === '/') {
 		// serve a simple homepage
 		return handleHome()
-	} else if (url.pathname.startsWith('/shorten/')) {
-		// split path on | for from & to
-		const [from, to] = url.pathname.replace('/shorten/', '').split('%7C')
-		
-		// if both were valid, otherwise return 400
-		if (from && isValidHttpUrl(to)) {
+	} else if (request.method === 'POST' && url.pathname === '/shorten') {
+		// shorten the url
+
+		// get the request data
+		const body = await request.json()
+		const to = body.to
+		let from = body.from
+
+		// if from isn't valid, generate a random string for it
+		while (!from) {
+			const newFrom = randomString(5)
+
+			// check that the random string doesn't already exist as a shortcut
+			const existing = await getShortcut(newFrom)
+
+			// if it doesn't already exist, use it, otherwise repeat the loop
+			if (!existing) {
+				from = newFrom
+			}
+		}
+
+		// test if the from string is valid, contains only chars from charset
+		const validFrom = from.split('').every((c: string) => allowedCharset.includes(c))
+
+		// if to is valid pass off to the shorten handler, otherwise return 400
+		if (validFrom && isValidHttpUrl(to)) {
 			return handleShorten({ from, to })
 		} else {
-			return new Response('invalid values', { status: 400 })
+			return new Response(JSON.stringify({ error: 'invalid characters or url' }), {
+				status: 400,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 		}
 	} else if (url.pathname.startsWith('/.htaccess')) {
+		// catch bots scanning for vulnerabilities
 		return handleTroll()
 	} else {
 		// for for all other paths, check if there's a shortcut

@@ -29,18 +29,18 @@
 			<div class="mx-auto max-w-3xl">
 				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 					<div class="sm:col-span-6">
-						<label for="from" class="block text-sm font-medium text-gray-700">shortcut</label>
+						<label for="to" class="block text-sm font-medium text-gray-700">destination</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
-							<span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">shawt.af/</span>
-							<input type="text" name="from" id="from" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+							<input type="url" name="to" id="to" placeholder="https://example.com" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
 						</div>
 					</div>
 				</div>
 				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 					<div class="sm:col-span-6">
-						<label for="to" class="block text-sm font-medium text-gray-700">destination</label>
+						<label for="from" class="block text-sm font-medium text-gray-700">shortcut</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
-							<input type="text" name="to" id="to" placeholder="https://example.com" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+							<span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">shawt.af/</span>
+							<input type="text" name="from" id="from" placeholder="leave blank for random value" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
 						</div>
 					</div>
 				</div>
@@ -85,36 +85,72 @@
 					const link = document.getElementById('success-url')
 					const error = document.getElementById('failure-span')
 
-					// start the spinner and hide all showing boxes
-					spinner.classList.toggle('hidden')
+					// hide all showing boxes
 					successBox.classList.add('hidden')
 					failureBox.classList.add('hidden')
 
+					// make sure destination isn't left blank
+					if (!to) {
+						error.innerText = 'destination can\'t be left blank'
+						failureBox.classList.remove('hidden')
+						return
+					}
+
+					// make sure destination is a valid url
+					let validURL = true
+					let url
+					try {
+						url = new URL(to)
+					} catch {
+						validURL = false
+					} finally {
+						if (url?.protocol === 'http:' || url?.protocol === 'https:') {
+							validURL = true
+						}
+					}
+
+					if (!validURL) {
+						error.innerText = 'destination must be a valid url'
+						failureBox.classList.remove('hidden')
+						return
+					}
+
+					// start spinner
+					spinner.classList.add('hidden')
+
 					try {
 						// call the shortening api
-						const req = await fetch(`/shorten/${from}|${to}`)
+						const req = await fetch('/shorten', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({ from, to })
+						})
+
+						const resp = await req.json()
 
 						if (req.status === 201) {
 							// fill out the link with the new link information
-							link.href = '/' + from
-							link.innerText = `${window.location.protocol}//${window.location.host}/${from}`
+							link.href = '/' + resp.from
+							link.innerText = `${window.location.protocol}//${window.location.host}/${resp.from}`
 
 							// show the box
-							successBox.classList.toggle('hidden')
+							successBox.classList.remove('hidden')
 						} else {
 							// fill out the link with the new link information
-							error.innerText = `${await req.text()} (${req.status})`
+							error.innerText = `${resp.error} (${req.status})`
 
 							// show the box
-							failureBox.classList.toggle('hidden')
+							failureBox.classList.remove('hidden')
 						}
 					} catch (err) {
 						error.innerText = err
-						failureBox.classList.toggle('hidden')
+						failureBox.classList.remove('hidden')
 					}
 
 					// stop the spinner
-					spinner.classList.toggle('hidden')
+					spinner.classList.add('hidden')
 				})
 			})
 		</script>
