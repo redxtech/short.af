@@ -4,6 +4,7 @@ import { ConnInfo } from "https://deno.land/std@0.167.0/http/server.ts";
 import { sendWebhook } from "./webhook.ts";
 import { Redirect, WebhookData } from "./types.ts";
 import { addShortcut, enableShortcut, getShortcut } from "./db.ts";
+import { token } from "../config.ts";
 
 // allowed characters for a shortcut
 const allowedCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'
@@ -50,7 +51,17 @@ const getRemoteAddress = (connInfo: ConnInfo): Deno.NetAddr => {
 
 // handle GET /
 const handleHome = (): Response => {
-	return new Response(Deno.readFileSync(Deno.cwd() + '/src/index.html'), {
+	return new Response(Deno.readFileSync(Deno.cwd() + '/src/public/index.html'), {
+		status: 200,
+		headers: {
+			'content-type': 'text/html; charset=utf-8'
+		}
+	})
+}
+
+// handle GET /enable
+const handleEnablePage = (): Response => {
+	return new Response(Deno.readFileSync(Deno.cwd() + '/src/public/enable.html'), {
 		status: 200,
 		headers: {
 			'content-type': 'text/html; charset=utf-8'
@@ -96,22 +107,33 @@ const handleShorten = async (shortcut: Redirect): Promise<Response> => {
 }
 
 // handle POST /enable
-const handleEnable = async (shortcut: string): Promise<Response> => {
+const handleEnable = async (shortcut: string, enableToken: string): Promise<Response> => {
+	// make sure token is valid
+	if (enableToken !== token) {
+		return new Response(JSON.stringify({ error: 'token not accepted'}), {
+			status: 403,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+	}
 	if (shortcut) {
 		// test if shortcut exists
 		const redirect = await getShortcut(shortcut)
 
 		if (redirect) {
 			const enabled = await enableShortcut(shortcut)
+
+			console.log(enabled)
 			return new Response(JSON.stringify(enabled), {
-				status: 204,
+				status: 200,
 				headers: {
 					'Content-Type': 'application/json'
 				}
 			})
 		} else {
-			return new Response(JSON.stringify({ message: 'already enabled' }), {
-				status: 204,
+			return new Response(JSON.stringify({ error: 'not found' }), {
+				status: 404,
 				headers: {
 					'Content-Type': 'application/json'
 				}
@@ -242,9 +264,15 @@ export const handler = async (request: Request, connInfo: ConnInfo): Promise<Res
 				}
 			})
 		}
-	} else if (request.method === 'POST' && url.pathname === '/enable') {
-		const shortcut = (await request.json()).shortcut
-		return handleEnable(shortcut)
+	} else if (url.pathname === '/enable') {
+		if (request.method === 'POST') {
+			// handle the enabling if POST
+			const { shortcut, token } = await request.json()
+			return handleEnable(shortcut, token)
+		} else {
+			// show enable page if GET
+			return handleEnablePage()
+		}
 	} else if (url.pathname.startsWith('/.htaccess')) {
 		// catch bots scanning for vulnerabilities
 		return handleTroll()
