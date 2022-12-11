@@ -2,9 +2,17 @@ version: "2.1"
 services:
   yoinked:
     build: .
-    container_name: yoinked
+    container_name: localhost/yoinked
     ports:
       - 8080:8080
     volumes:
       - ./db:/app/yoinked/db
     restart: unless-stopped
+  mongo:
+    image: docker.io/mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: yoinked
+      MONGO_INITDB_ROOT_PASSWORD: yoinked
+    volumes:
+      - ./data:/data/db
