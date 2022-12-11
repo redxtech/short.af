@@ -27,7 +27,7 @@ export const addShortcut = async (shortcut: Redirect): Promise<Redirect | undefi
 
 // enable yoinking for a shortcut
 export const enableShortcut = async (shortcut: string): Promise<Redirect | undefined> => {
-	const update = await redirects.updateOne({ $set: { from: shortcut } }, { yoink: true })
+	const update = await redirects.updateOne({ from: shortcut }, { $set: { yoink: true } })
 	if (update) {
 		return await getShortcut(shortcut)
 	}
@@ -35,7 +35,7 @@ export const enableShortcut = async (shortcut: string): Promise<Redirect | undef
 
 // disable yoinking for a shortcut
 export const disableShortcut = async (shortcut: string): Promise<Redirect | undefined> => {
-	const update = await redirects.updateOne({ $set: { from: shortcut } }, { yoink: false })
+	const update = await redirects.updateOne({ from: shortcut }, { $set: { yoink: false } })
 	if (update) {
 		return await getShortcut(shortcut)
 	}
@@ -43,7 +43,7 @@ export const disableShortcut = async (shortcut: string): Promise<Redirect | unde
 
 // change a shortcut in the database
 export const changeShortcut = async (shortcut: Redirect): Promise<Redirect | undefined> => {
-	const update = await redirects.updateOne({ $set: { from: shortcut.from } }, { to: shortcut.to })
+	const update = await redirects.updateOne({ from: shortcut.from }, { $set: { to: shortcut.to } })
 	if (update) {
 		return await getShortcut(shortcut.from)
 	}
