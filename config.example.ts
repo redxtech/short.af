@@ -9,7 +9,7 @@ export const token = ''
 export const useGoogleSafeURLs = true
 
 export const mongo: MongoConfig = {
-	host: '127.0.0.1',
+	host: 'yoinked_mongo',
 	port: 27017,
 	username: 'yoinked',
 	password: 'yoinked'

@@ -17,12 +17,14 @@ once configured, you should be able to run it with `deno run ./src/main.ts`, or 
 
 you can shorten new urls from the home page (`/`), and enable yoinking on the enabling page (`/enable`)
 
+if you're not using docker-compose, you will need to change the `mongo.host` property in `config.ts` to point at the ip of the mongo instance you will be using.
+
 ### docker
 i've build a dockerfile and a compose file for easy running. `docker compose up --build` in the should start it up. `docker compose up --build -d` will detach from the log. bring it down with `docker compose down`.
 
 due to how the app and the container work, you will need to rebuild the container every time you edit `config.ts`. this is because it gets copied into the container before building, as it's required for the build to succeed.
 
-keep in mind you will need to change the config to use the mongo container's ip in order to connect to it
+keep in mind you will need to change the config to use the mongo container's ip in order to connect to it. if you're using docker-compose, this should work with the default values.
 
 ## endpoints
 
