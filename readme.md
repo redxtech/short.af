@@ -8,7 +8,7 @@ here are the available config options, custom types are imported in `config.exam
  - `port`: number, port that yoinked will run on
  - `webhookURL`: string, discord webhook for where ips should be logged
  - `token`: string, admin token for enabling yoinking
- - `useGoogleSageURLs`: boolean, whether to use google safe browsing api to check urls before shortening
+ - `googleSafeBrowsingKey`: string | boolean, either a google api key for the safe browsing api, or false to disable checking
  - `mongo`: MongoConfig, database access information
  - `enabled`: EnabledDataPoints, which data points to log in webhook channel
 
@@ -38,11 +38,11 @@ will 302 redirect you to the destination if it exists, and 404 otherwise
 will show the destination in plaintext if it exists, and 404 otherwise
 
 ### `POST /shorten`: `{ from, to }`
-will create a shortened link, will respond with 201 on successful add, 422 if a link with that same name already exists, and 400 for other failures
+will create a shortened link, will respond with 201 on successful add, 403 if it's a malicious url, 422 if a link with that same name already exists, and 400 for other failures
 
 ### `GET /enable`
 will show a simple form to enable yoinking on a shortcut
 
 ### `POST /enable`: `{ shortcut, token }`
-will enable yoinking on the selected url if the passeed token matches the configured admin token. returns 403 if the token doesn't match, and 200 if enabled successfully/already enabled
+will enable yoinking on the selected url if the passeed token matches the configured admin token. returns 401 if the token doesn't match, and 200 if enabled successfully/already enabled
 

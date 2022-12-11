@@ -6,7 +6,7 @@ export const webhookURL = ''
 
 export const token = ''
 
-export const useGoogleSafeURLs = true
+export const googleSafeBrowsingKey = false
 
 export const mongo: MongoConfig = {
 	host: 'yoinked_mongo',

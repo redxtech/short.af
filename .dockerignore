@@ -1,0 +1,8 @@
+.gitignore
+config.example.ts
+docker-compose.yml
+readme.md
+data
+db
+.vscode
+.git

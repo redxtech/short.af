@@ -13,7 +13,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: yoinked
       MONGO_INITDB_ROOT_PASSWORD: yoinked
-      ports:
-        - 27017:27017
+    ports:
+      - 27017:27017
     volumes:
       - ./data:/data/db
