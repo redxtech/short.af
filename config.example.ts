@@ -6,6 +6,13 @@ export const webhookURL = ''
 
 export const token = ''
 
+export const mongo = {
+	host: '127.0.0.1',
+	port: '27017',
+	username: 'yoinked',
+	password: 'yoinked'
+}
+
 export const enabled: EnabledDataPoints = {
 	ip: true,
 	method: true,
