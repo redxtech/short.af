@@ -5,16 +5,14 @@ services:
     container_name: yoinked
     ports:
       - 8080:8080
-    volumes:
-      - ./db:/app/yoinked/db
     restart: unless-stopped
-  mongo:
+  db:
     image: docker.io/mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: yoinked
       MONGO_INITDB_ROOT_PASSWORD: yoinked
       ports:
-        - '27017:27017'
+        - 27017:27017
     volumes:
       - ./data:/data/db

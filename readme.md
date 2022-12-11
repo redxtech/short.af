@@ -1,34 +1,46 @@
 # yoinked
-> a simple, self hosted ip grabber & link shortener
+> a simple, self hosted ip grabber & link shortener.
 
-more details to come
+## setup
+you can run the app after choosing some configuration options, get a template with `cp config.example.ts config.ts`.
+
+here are the available config options, custom types are imported in `config.example.ts`:
+ - `port`: number, port that yoinked will run on
+ - `webhookURL`: string, discord webhook for where ips should be logged
+ - `token`: string, admin token for enabling yoinking
+ - `useGoogleSageURLs`: boolean, whether to use google safe browsing api to check urls before shortening
+ - `mongo`: MongoConfig, database access information
+ - `enabled`: EnabledDataPoints, which data points to log in webhook channel
 
 ## usage
-you can run the app after configuring your discord webhook url and admin token, get a template with `cp config.example.ts config.ts`.
-
-you should be able to run it with `deno run ./src/main.ts`, or to pass all permissions, `deno run --allow-env --allow-net --allow-read --allow-write ./src/main.ts`.
+once configured, you should be able to run it with `deno run ./src/main.ts`, or to pass all permissions, `deno run --allow-env --allow-net --allow-read --allow-write ./src/main.ts`.
 
 you can shorten new urls from the home page (`/`), and enable yoinking on the enabling page (`/enable`)
 
 ### docker
 i've build a dockerfile and a compose file for easy running. `docker compose up --build` in the should start it up. `docker compose up --build -d` will detach from the log. bring it down with `docker compose down`.
 
-the database uses a file to store the data `database.json`, so keep that in mind when setting up your docker mounts.
+due to how the app and the container work, you will need to rebuild the container every time you edit `config.ts`. this is because it gets copied into the container before building, as it's required for the build to succeed.
+
+keep in mind you will need to change the config to use the mongo container's ip in order to connect to it
 
 ## endpoints
 
 ### `GET /`
-will show a barebones home page
+will show a simple homepage with a form to create shortcuts
 
 ### `GET /:from`
 will 302 redirect you to the destination if it exists, and 404 otherwise
 
 ### `GET /expand/:from`
-will show destination in plaintext if it exists, and 404 otherwise
+will show the destination in plaintext if it exists, and 404 otherwise
 
-### `POST /shorten`, body: `{ from, to }`
-will create a shortened link, shortcut and abbreviation must be separated by a `"|"` (`"%7C"`), will respond with 201 on successful add, 422 if a link with that same name already exists, and 400 for other failures
+### `POST /shorten`: `{ from, to }`
+will create a shortened link, will respond with 201 on successful add, 422 if a link with that same name already exists, and 400 for other failures
 
-### `POST /enable`, body: `{ shortcut, token }`
-will enable yoinking on the selected url if the passeed token matches the configured admin token
+### `GET /enable`
+will show a simple form to enable yoinking on a shortcut
+
+### `POST /enable`: `{ shortcut, token }`
+will enable yoinking on the selected url if the passeed token matches the configured admin token. returns 403 if the token doesn't match, and 200 if enabled successfully/already enabled
 

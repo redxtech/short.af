@@ -1,4 +1,4 @@
-import { EnabledDataPoints } from './src/types.ts'
+import { EnabledDataPoints, MongoConfig } from './src/types.ts'
 
 export const port = 8080
 
@@ -6,9 +6,11 @@ export const webhookURL = ''
 
 export const token = ''
 
-export const mongo = {
+export const useGoogleSafeURLs = true
+
+export const mongo: MongoConfig = {
 	host: '127.0.0.1',
-	port: '27017',
+	port: 27017,
 	username: 'yoinked',
 	password: 'yoinked'
 }

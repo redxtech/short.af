@@ -5,7 +5,7 @@ import { Redirect } from "./types.ts";
 
 // initialization
 const client = new MongoClient();
-await client.connect(`mongodb://${mongo.username}:${mongo.password}@${mongo.host}:${mongo.port}`);
+await client.connect(`mongodb://${mongo.username}:${mongo.password}@${mongo.host}:${mongo.port.toString()}`);
 const db = client.database('yoinked');
 const redirects = db.collection<Redirect>('redirects');
 

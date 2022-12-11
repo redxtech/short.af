@@ -33,6 +33,13 @@ export type Redirect = {
 	yoink?: boolean
 }
 
+export type MongoConfig = {
+	host: string
+	port: number
+	username: string
+	password: string
+}
+
 // schema for enabled data points configuration
 export type EnabledDataPoints = {
 	ip: boolean,
