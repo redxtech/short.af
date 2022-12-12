@@ -10,7 +10,7 @@ here are the available config options, custom types are imported in `config.exam
  - `mongo`: MongoConfig, database access information
 
 ## usage
-once configured, you should be able to run it with `deno run ./src/main.ts`, or to pass all permissions, `deno run --allow-net ./src/main.ts`.
+once configured, you should be able to run it with `deno run ./src/main.ts`, or to pass all permissions, `deno run --allow-net --allow-read ./src/main.ts`.
 
 you can shorten new urls from the home page (`/`).
 

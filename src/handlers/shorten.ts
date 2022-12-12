@@ -52,7 +52,12 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 							clientVersion: '1.0.0'
 						},
 						threatInfo: {
-							threatTypes: ['MALWARE', 'SOCIAL_ENGINEERING', 'POTENTIALLY_HARMFUL_APPLICATION'],
+							threatTypes: [
+								'MALWARE',
+								'POTENTIALLY_HARMFUL_APPLICATION',
+								'SOCIAL_ENGINEERING',
+								'UNWANTED_SOFTWARE'
+							],
 							platformTypes: ['ANY_PLATFORM'],
 							threatEntryTypes: ['URL'],
 							threatEntries: [{ url: shortcut.to }]
