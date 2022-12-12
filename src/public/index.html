@@ -23,12 +23,12 @@
 		<div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
 			<div class="mx-auto max-w-3xl">
 				<h1 class="text-3xl font-bold">shawt.af</h1>
-				<h3 class="text-xl italic text-gray-700">> a simple url shortener</h3>
+				<h3 class="text-xl italic text-gray-700">> <span id="blurb">a simple url shortener</span></h3>
 			</div>
 		</div>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<div id="form" class="mx-auto max-w-3xl">
-				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+				<div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 					<div class="sm:col-span-6">
 						<label for="to" class="block text-sm font-medium text-gray-700">destination</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
@@ -219,6 +219,22 @@
 				document.getElementById('q').addEventListener('click', () => {
 					document.getElementById('about').showModal()
 				})
+
+				// choose a random slogan to display on page load
+				const selectFrom = arr => arr[Math.floor((Math.random() * arr.length))]
+				const blurb = selectFrom([
+					'a simple url shortener',
+					'makes your links shawt as f*&k!',
+					'hello friend',
+					'now with full colour!',
+					'no lower case Ls or upper case Is!',
+					'your link but smol',
+					'beep beep boop borp',
+					'hello world!',
+					'help i\'ve been trapped inside a url shortener!'
+				])
+				document.getElementById('blurb').innerText = blurb
+
 			})
 		</script>
 	</body>
