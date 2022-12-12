@@ -10,7 +10,12 @@
       "label": "run dev",
       "type": "shell",
       "command": "denon run --allow-env --allow-net --allow-read --allow-write src/main.ts"
-    }
+    },
+		{
+			"label": "run db",
+			"type": "shell",
+			"command": "sudo docker run -p 27017:27017 -v yoink_data:/data/db -e MONGO_INITDB_ROOT_USERNAME=yoinked -e MONGO_INITDB_ROOT_PASSWORD=yoinked docker.io/mongo"
+		}
   ]
 }
 
