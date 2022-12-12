@@ -1,7 +1,5 @@
 // some useful functions
 
-import { ConnInfo } from 'https://deno.land/std@0.167.0/http/server.ts';
-
 // allowed characters for a shortcut
 export const allowedCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'
 const genCharset = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789-_+.'
@@ -40,15 +38,3 @@ export const randomString = (length: number): string => {
 	return stringBuilder.join('')
 }
 
-// assert that the address is a network address instead of a unix address
-function assertIsNetAddr(addr: Deno.Addr): asserts addr is Deno.NetAddr {
-  if (!['tcp', 'udp'].includes(addr.transport)) {
-    throw new Error('Not a network address');
-  }
-}
-
-// get the remote address from the connection, checking it's the right type
-export const getRemoteAddress = (connInfo: ConnInfo): Deno.NetAddr => {
-  assertIsNetAddr(connInfo.remoteAddr);
-  return connInfo.remoteAddr;
-}

@@ -10,14 +10,6 @@ export const handleHome = (): Response => {
 	})
 }
 
-// handle GET /enable
-export const handleEnablePage = (): Response => {
-	return new Response(Deno.readFileSync(Deno.cwd() + '/src/public/enable.html'), {
-		status: 200,
-		headers
-	})
-}
-
 // handle 404
 export const notFound = (): Response => {
 	return new Response('404 not found', { status: 404 })
