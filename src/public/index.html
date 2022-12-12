@@ -27,7 +27,7 @@
 			</div>
 		</div>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="mx-auto max-w-3xl">
+			<div id="form" class="mx-auto max-w-3xl">
 				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 					<div class="sm:col-span-6">
 						<label for="to" class="block text-sm font-medium text-gray-700">destination</label>
@@ -126,8 +126,8 @@
 		</dialog>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
-				// add click listener to submit button
-				document.getElementById('submit').addEventListener('click', async () => {
+				// function to submit the form
+				const submitForm = async () => {
 					// get data from the page
 					const from = document.getElementById('from').value
 					const to = document.getElementById('to').value
@@ -205,6 +205,14 @@
 
 					// stop the spinner
 					spinner.classList.add('hidden')
+				}
+
+				// add click listener to submit button & enter listener to the form
+				document.getElementById('submit').addEventListener('click', submitForm)
+				document.getElementById('form').addEventListener('keyup', (e) => {
+					if (e.keyCode === 13) {
+						submitForm()
+					}
 				})
 
 				// add click listener to the question mark to open dialog
