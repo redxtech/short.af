@@ -113,9 +113,8 @@
 					</p>
 					<h4 class="text-base"><code>POST /shorten</code></h4>
 					<p class="my-2 text-slate-500">
-						the <code>/shorten</code> endpoint takes two parameters: <code>{ from, to }</code>. omitting <code>from</code> will allow the server to generate a random shortcut for the url.
+						the <code>/shorten</code> endpoint takes two parameters: <code>{from, to}</code>. omitting <code>from</code> will allow the server to generate a random shortcut for the url.
 						this will return the shortcut object with a 201 status if sucessful, a 403 if the url is flagged as malicious, 422 if the shortcut already exists, and 400 for any other errors.
-
 					</p>
 				</div>
 				<form class="m-0" method="dialog">
