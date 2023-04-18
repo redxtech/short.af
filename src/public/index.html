@@ -40,7 +40,7 @@
 					<div class="sm:col-span-6">
 						<label for="from" class="block font-medium text-gray-700">shortcut</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
-							<span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500">shawt.af/</span>
+							<span id="from-label" class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500">shawt.af/</span>
 							<input type="text" name="from" id="from" placeholder="leave blank for random value" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
 						</div>
 					</div>
@@ -128,6 +128,9 @@
         // focus form on pageload
         const toInput = document.getElementById('to')
         toInput.focus()
+
+        // set from label to current host
+        document.getElementById('from-label').innerText = window.location.host
 
 				// function to submit the form
 				const submitForm = async () => {
