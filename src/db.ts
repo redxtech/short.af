@@ -9,6 +9,10 @@ const connectURL = config.get('db.url')
   : `mongodb://${config.get('db.username')}:${config.get('db.password')}@${
     config.get('db.host')}:${config.get('db.port').toString()}`
 
+if (!config.get('db.url') && !config.get('db.host')) {
+  throw Error('database url or hostname required')
+}
+
 if (config.get('env') !== 'production') {
   console.log(`db connect url: ${connectURL}`)
 }

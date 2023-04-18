@@ -32,7 +32,7 @@ export const config = convict({
 		host: {
 			doc: 'Database host name/IP',
 			format: '*',
-			default: 'localhost',
+			default: undefined,
 			env: 'DB_HOST',
 			arg: 'db-host',
 		},
