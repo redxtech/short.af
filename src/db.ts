@@ -4,8 +4,13 @@ import { config } from './config.ts';
 import { Redirect } from "./types.ts";
 
 // initialization
+const connectURL = config.get('db.url')
+  ? config.get('url')
+  : `mongodb://${config.get('db.username')}:${config.get('db.password')}@${
+    config.get('db.host')}:${config.get('db.port').toString()}`
+
 const client = new MongoClient();
-await client.connect(`mongodb://${config.get('db.username')}:${config.get('db.password')}@${config.get('db.host')}:${config.get('db.port').toString()}`);
+await client.connect(connectURL);
 const db = client.database(config.get('db.name'));
 const redirects = db.collection<Redirect>('redirects');
 

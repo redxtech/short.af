@@ -16,6 +16,13 @@ export const config = convict({
 		arg: 'safe-browsing-key',
 	},
 	db: {
+		url: {
+			doc: 'Mongo connection URL',
+			format: String,
+			default: undefined,
+			env: 'DB_URL',
+			arg: 'db-url',
+		},
 		host: {
 			doc: 'Database host name/IP',
 			format: '*',
