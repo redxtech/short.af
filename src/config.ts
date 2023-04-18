@@ -1,6 +1,12 @@
 import convict from 'npm:convict';
 
 export const config = convict({
+	env: {
+		doc: 'The application environment.',
+		format: ['production', 'development', 'test'],
+		default: 'development',
+		env: 'DENO_ENV',
+	},
 	port: {
 		doc: 'The port for the webserver to listen on',
 		format: 'port',

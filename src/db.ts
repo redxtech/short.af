@@ -9,7 +9,9 @@ const connectURL = config.get('db.url')
   : `mongodb://${config.get('db.username')}:${config.get('db.password')}@${
     config.get('db.host')}:${config.get('db.port').toString()}`
 
-// console.log(connectURL)
+if (config.get('env') !== 'production') {
+  console.log(`db connect url: ${connectURL}`)
+}
 
 const client = new MongoClient(connectURL);
 await client.connect();

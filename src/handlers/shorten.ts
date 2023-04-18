@@ -32,6 +32,10 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 
 	// if either are invalid, return 400
 	if (!validFrom || !isValidHttpUrl(shortcut.to)) {
+    if (config.get('env') !== 'production') {
+      console.log('shorten: invalid characters or url')
+    }
+
 		return new Response(JSON.stringify({ error: 'invalid characters or url' }), { status: 400, headers })
 	}
 
@@ -68,9 +72,17 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 
 				// if there's a match, return an error and don't shorten the url
 				if (result.matches) {
+          if (config.get('env') !== 'production') {
+            console.log('shorten: malicious url detected')
+          }
+
 					return new Response(JSON.stringify({ error: 'malicious url - ' + result?.matches[0]?.threatType }), { status: 403, headers })
 				}
 			} catch (err) {
+        if (config.get('env') !== 'production') {
+          console.log('shorten: error checking safe browsing api')
+        }
+
 				return new Response(JSON.stringify({ error: 'error checking safe browsing api - ' + err }), { status: 503, headers })
 			}
 		}
@@ -80,11 +92,23 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 
 		// if succesfully added, respond with 201, otherwise fail with 400
 		if (added) {
+      if (config.get('env') !== 'production') {
+        console.log('shorten: successfully shortened url')
+      }
+
 			return new Response(JSON.stringify(shortcut), { status: 201, headers })
 		} else {
+      if (config.get('env') !== 'production') {
+        console.log('shorten: failed to create shortened url')
+      }
+
 			return new Response(JSON.stringify({ error: 'failed to create shortcut' }), { status: 400, headers })
 		}
 	} else {
+      if (config.get('env') !== 'production') {
+        console.log('shorten: shortened url already exists')
+      }
+
 		return new Response(JSON.stringify({ error: 'already exists' }), { status: 422, headers })
 	}
 }
