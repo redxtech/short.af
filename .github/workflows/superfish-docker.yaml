@@ -1,4 +1,4 @@
-name: Deploy API
+name: Deploy Yoinked Container
 on:
   push:
     branches:
