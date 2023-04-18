@@ -6,6 +6,6 @@ ADD . .
 
 RUN deno cache src/main.ts
 
-RUN deno install -f --allow-net --allow-read --name yoinked src/main.ts
+RUN deno install -f --allow-net --allow-read --allow-sys --name yoinked src/main.ts
 
 CMD /usr/local/bin/yoinked
