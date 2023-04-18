@@ -5,7 +5,7 @@ import { Redirect } from "./types.ts";
 
 // initialization
 const connectURL = config.get('db.url')
-  ? config.get('url')
+  ? config.get('db.url')
   : `mongodb://${config.get('db.username')}:${config.get('db.password')}@${
     config.get('db.host')}:${config.get('db.port').toString()}`
 
