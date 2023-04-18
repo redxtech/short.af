@@ -109,5 +109,27 @@
     "https://deno.land/x/web_bson@v0.2.5/src/uuid_utils.ts": "322cbea409a32cfdbffcae854b91bb30b80730741e032b98f5d6868ad63bc07d",
     "https://deno.land/x/web_bson@v0.2.5/src/validate_utf8.ts": "b7f4d723c379fb66aa84e148bb59f78f4e1c96847e28c38ee7f9f3bf35703ae4",
     "https://deno.land/x/web_bson@v0.2.5/utils.ts": "4c51c0be4bbb77c1e547eeef9b5aa53ffa611f628684875375103f627649ceb1"
+  },
+  "npm": {
+    "specifiers": {
+      "convict": "convict@6.2.4"
+    },
+    "packages": {
+      "convict@6.2.4": {
+        "integrity": "sha512-qN60BAwdMVdofckX7AlohVJ2x9UvjTNoKVXCL2LxFk1l7757EJqf1nySdMkPQer0bt8kQ5lQiyZ9/2NvrFBuwQ==",
+        "dependencies": {
+          "lodash.clonedeep": "lodash.clonedeep@4.5.0",
+          "yargs-parser": "yargs-parser@20.2.9"
+        }
+      },
+      "lodash.clonedeep@4.5.0": {
+        "integrity": "sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==",
+        "dependencies": {}
+      },
+      "yargs-parser@20.2.9": {
+        "integrity": "sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==",
+        "dependencies": {}
+      }
+    }
   }
 }

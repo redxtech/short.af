@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     depends_on:
       - db
+    volumes:
+      - ./yoinked.config.json:/app/yoinked/yoinked.config.json
   db:
     image: docker.io/mongo
     container_name: yoinked_mongo

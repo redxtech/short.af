@@ -4,11 +4,3 @@ export type Redirect = {
 	to: string
 	yoink?: boolean
 }
-
-export type MongoConfig = {
-	host: string
-	port: number
-	username: string
-	password: string
-}
-

@@ -1,6 +1,6 @@
 // handler for shorten endpoint
 
-import { googleSafeBrowsingKey } from '../../config.ts'
+import { config } from '../config.ts'
 import { addShortcut, getShortcut } from '../db.ts'
 import { allowedCharset, headers, isValidHttpUrl, randomString } from '../utils.ts'
 
@@ -41,9 +41,9 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 	// if the redirect doesn't already exist, create it, otherwise throw error
 	if (!redirect && !shortcut.from.startsWith(`expand`)) {
 		// test if the url is sketchy before adding it
-		if (googleSafeBrowsingKey) {
+		if (config.get('googleSafeBrowsingKey')) {
 			try {
-				const safeTest = await fetch(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${googleSafeBrowsingKey}`, {
+				const safeTest = await fetch(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${config.get('googleSafeBrowsingKey')}`, {
 					method: 'POST',
 					headers,
 					body: JSON.stringify({

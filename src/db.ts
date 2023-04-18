@@ -1,12 +1,12 @@
 import { MongoClient} from "https://deno.land/x/mongo@v0.31.1/mod.ts";
-import { mongo } from '../config.ts';
+import { config } from './config.ts';
 
 import { Redirect } from "./types.ts";
 
 // initialization
 const client = new MongoClient();
-await client.connect(`mongodb://${mongo.username}:${mongo.password}@${mongo.host}:${mongo.port.toString()}`);
-const db = client.database('yoinked');
+await client.connect(`mongodb://${config.get('db.username')}:${config.get('db.password')}@${config.get('db.host')}:${config.get('db.port').toString()}`);
+const db = client.database(config.get('db.name'));
 const redirects = db.collection<Redirect>('redirects');
 
 // query the database for a shortcut

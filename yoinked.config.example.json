@@ -1,0 +1,11 @@
+{
+  "port": 8080,
+  "googleSafeBrowsingKey": "",
+  "db": {
+    "host": "localhost",
+    "port": 27017,
+    "name": "yoinked",
+    "username": "yoinked",
+    "password": "yoinked"
+  }
+}

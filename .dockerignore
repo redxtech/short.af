@@ -1,5 +1,5 @@
 .gitignore
-config.example.ts
+yoinked.config.json
 docker-compose.yml
 readme.md
 data
