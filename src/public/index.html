@@ -59,7 +59,7 @@
 				<div id="success-box" class="hidden rounded-md bg-green-50 p-4 my-6">
 					<div class="flex">
 						<div class="flex-1 md:flex md:justify-between">
-							<p class="text-green-700">your shortened link has been created: <a id="success-url" href="#" target="_blank" class="font-bold underline">#</a></p>
+							<p class="text-green-700">your shortened link has been created & copied to clipboard: <a id="success-url" href="#" target="_blank" class="font-bold underline">#</a></p>
 						</div>
 					</div>
 				</div>
@@ -125,11 +125,15 @@
 		</dialog>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
+        // focus form on pageload
+        const toInput = document.getElementById('to')
+        toInput.focus()
+
 				// function to submit the form
 				const submitForm = async () => {
 					// get data from the page
 					const from = document.getElementById('from').value
-					const to = document.getElementById('to').value
+          const to = toInput.value
 
 					// get page elements for later use
 					const spinner = document.getElementById('spinner')
@@ -184,9 +188,13 @@
 						const resp = await req.json()
 
 						if (req.status === 201) {
+              const shortUrl = `${window.location.protocol}//${window.location.host}/${resp.from}`
 							// fill out the link with the new link information
 							link.href = '/' + resp.from
-							link.innerText = `${window.location.protocol}//${window.location.host}/${resp.from}`
+							link.innerText = shortUrl
+
+              // copy url to clipboard
+              navigator.clipboard.writeText(shortUrl)
 
 							// show the success box
 							successBox.classList.remove('hidden')
