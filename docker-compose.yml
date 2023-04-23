@@ -10,6 +10,8 @@ services:
       - db
     volumes:
       - ./yoinked.config.json:/app/yoinked/yoinked.config.json
+    environment:
+      DB_URL: 'mongodb://yoinked:yoinked@db:27017'
   db:
     image: docker.io/mongo
     container_name: yoinked_mongo
