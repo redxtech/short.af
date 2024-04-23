@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shortaf
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: self-signed
+spec:
+  rules:
+    - host: short.af
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shortaf
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - short.af
+      secretName: short.af
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shortaf-super-fish
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+    - host: short.super.fish
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shortaf
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - short.super.fish
+      secretName: short.super.fish

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortaf
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - env:
+          - name: DENO_ENV
+            value: production
+          - name: DB_HOST
+            value: shortaf-postgres-rw
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: shortaf-postgres
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: shortaf-postgres
+                key: password
+          - name: DB_CA_CERT
+            valueFrom:
+              secretKeyRef:
+                name: shortaf-postgres-ca
+                key: ca.crt
+          - name: GOOGLE_SAFE_BROWSING_KEY
+            valueFrom:
+              secretKeyRef:
+                name: google-safe-browsing
+                key: api_key
+          image: docker.super.fish/gabe/short-af
+          name: shortaf
+          ports:
+            - containerPort: 8080
+              name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          volumeMounts:
+            - mountPath: /app/yoinked/yoinked.config.json
+              name: config
+              subPath: yoinked.config.json
+      restartPolicy: Always
+      volumes:
+        - name: config
+          configMap:
+            name: config
