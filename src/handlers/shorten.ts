@@ -65,7 +65,7 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 						headers,
 						body: JSON.stringify({
 							client: {
-								clientId: 'shawtaf',
+								clientId: 'shortaf',
 								clientVersion: '1.0.0',
 							},
 							threatInfo: {
