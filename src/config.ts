@@ -61,8 +61,15 @@ export const config = convict({
 			doc: 'Database password',
 			format: String,
 			default: 'yoinked',
-			env: 'DB_PASS',
-			arg: 'db-pass',
+			env: 'DB_PASSWORD',
+			arg: 'db-password',
+		},
+		cert: {
+			doc: 'CA certificate for the database',
+			format: String,
+			default: '',
+			env: 'DB_CA_CERT',
+			arg: 'db-ca-cert',
 		},
 	},
 })

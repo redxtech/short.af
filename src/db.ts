@@ -4,6 +4,8 @@ import { config } from './config.ts'
 
 import { Redirect } from './types.ts'
 
+const caCert = config.get('db.cert')
+
 // initialization
 const pool = new Pool(
 	{
@@ -13,6 +15,12 @@ const pool = new Pool(
 		database: config.get('db.name'),
 		hostname: config.get('db.host'),
 		port: config.get('db.port'),
+		tls: caCert
+			? {
+				caCertificates: [caCert],
+				enforce: true,
+			}
+			: {},
 	},
 	config.get('db.connections'),
 )
