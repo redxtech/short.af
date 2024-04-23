@@ -6,19 +6,17 @@
     "noUnusedParameters": true,
     "strict": true
   },
-	"tasks": {
-		"start": "deno run --allow-env --allow-net --allow-read --allow-sys ./src/main.ts",
-		"dev": "deno run --watch --allow-env --allow-net --allow-read --allow-sys ./src/main.ts",
-		"up": "docker compose up --build",
-		"down": "docker compose down",
-		"up-dev": "docker compose -f ./docker/dev/docker-compose.yml up --build",
-		"down-dev": "docker compose -f ./docker/dev/docker-compose.yml down"
-	},
+  "tasks": {
+    "start": "deno run --allow-env --allow-net --allow-read --allow-sys ./src/main.ts",
+    "dev": "deno run --watch --allow-env --allow-net --allow-read --allow-sys ./src/main.ts",
+    "up": "docker compose up --build",
+    "down": "docker compose down",
+    "up-dev": "docker compose -f ./docker/dev/docker-compose.yml up --build",
+    "down-dev": "docker compose -f ./docker/dev/docker-compose.yml down"
+  },
   "lint": {
-    "files": {
-      "include": ["src/"],
-      "exclude": ["src/testdata/"]
-    },
+    "include": ["src/"],
+    "exclude": ["src/testdata/"],
     "rules": {
       "tags": ["recommended"],
       "include": ["camelcase", "explicit-function-return-type"],
@@ -26,16 +24,13 @@
     }
   },
   "fmt": {
-    "files": {
-      "include": ["src/"],
-      "exclude": ["src/testdata/"]
-    },
-    "options": {
-      "useTabs": true,
-      "lineWidth": 80,
-      "indentWidth": 4,
-      "singleQuote": true,
-      "proseWrap": "preserve"
-    }
+    "useTabs": true,
+    "lineWidth": 80,
+    "indentWidth": 4,
+    "semiColons": false,
+    "singleQuote": true,
+    "proseWrap": "preserve",
+    "include": ["src/"],
+    "exclude": ["src/testdata/"]
   }
 }

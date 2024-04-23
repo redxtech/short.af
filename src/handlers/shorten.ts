@@ -2,8 +2,12 @@
 
 import { config } from '../config.ts'
 import { addShortcut, getShortcut } from '../db.ts'
-import { allowedCharset, headers, isValidHttpUrl, randomString } from '../utils.ts'
-
+import {
+	allowedCharset,
+	headers,
+	isValidHttpUrl,
+	randomString,
+} from '../utils.ts'
 
 // handle POST /shorten
 export const handleShorten = async (request: Request): Promise<Response> => {
@@ -11,7 +15,7 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 	const body = await request.json()
 	const shortcut = {
 		to: body.to,
-		from: body.from
+		from: body.from,
 	}
 
 	// if from isn't valid, generate a random string for it
@@ -28,15 +32,20 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 	}
 
 	// test if the from string is valid, contains only chars from charset
-	const validFrom = shortcut.from.split('').every((c: string) => allowedCharset.includes(c))
+	const validFrom = shortcut.from.split('').every((c: string) =>
+		allowedCharset.includes(c)
+	)
 
 	// if either are invalid, return 400
 	if (!validFrom || !isValidHttpUrl(shortcut.to)) {
-    if (config.get('env') !== 'production') {
-      console.log('shorten: invalid characters or url')
-    }
+		if (config.get('env') !== 'production') {
+			console.log('shorten: invalid characters or url')
+		}
 
-		return new Response(JSON.stringify({ error: 'invalid characters or url' }), { status: 400, headers })
+		return new Response(
+			JSON.stringify({ error: 'invalid characters or url' }),
+			{ status: 400, headers },
+		)
 	}
 
 	// test if shortcut exists
@@ -47,43 +56,59 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 		// test if the url is sketchy before adding it
 		if (config.get('googleSafeBrowsingKey')) {
 			try {
-				const safeTest = await fetch(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${config.get('googleSafeBrowsingKey')}`, {
-					method: 'POST',
-					headers,
-					body: JSON.stringify({
-						client: {
-							clientId: 'shawtaf',
-							clientVersion: '1.0.0'
-						},
-						threatInfo: {
-							threatTypes: [
-								'MALWARE',
-								'POTENTIALLY_HARMFUL_APPLICATION',
-								'SOCIAL_ENGINEERING',
-								'UNWANTED_SOFTWARE'
-							],
-							platformTypes: ['ANY_PLATFORM'],
-							threatEntryTypes: ['URL'],
-							threatEntries: [{ url: shortcut.to }]
-						}
-					})
-				})
+				const safeTest = await fetch(
+					`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${
+						config.get('googleSafeBrowsingKey')
+					}`,
+					{
+						method: 'POST',
+						headers,
+						body: JSON.stringify({
+							client: {
+								clientId: 'shawtaf',
+								clientVersion: '1.0.0',
+							},
+							threatInfo: {
+								threatTypes: [
+									'MALWARE',
+									'POTENTIALLY_HARMFUL_APPLICATION',
+									'SOCIAL_ENGINEERING',
+									'UNWANTED_SOFTWARE',
+								],
+								platformTypes: ['ANY_PLATFORM'],
+								threatEntryTypes: ['URL'],
+								threatEntries: [{ url: shortcut.to }],
+							},
+						}),
+					},
+				)
 				const result = await safeTest.json()
 
 				// if there's a match, return an error and don't shorten the url
 				if (result.matches) {
-          if (config.get('env') !== 'production') {
-            console.log('shorten: malicious url detected')
-          }
+					if (config.get('env') !== 'production') {
+						console.log('shorten: malicious url detected')
+					}
 
-					return new Response(JSON.stringify({ error: 'malicious url - ' + result?.matches[0]?.threatType }), { status: 403, headers })
+					return new Response(
+						JSON.stringify({
+							error: 'malicious url - ' +
+								result?.matches[0]?.threatType,
+						}),
+						{ status: 403, headers },
+					)
 				}
 			} catch (err) {
-        if (config.get('env') !== 'production') {
-          console.log('shorten: error checking safe browsing api')
-        }
+				if (config.get('env') !== 'production') {
+					console.log('shorten: error checking safe browsing api')
+				}
 
-				return new Response(JSON.stringify({ error: 'error checking safe browsing api - ' + err }), { status: 503, headers })
+				return new Response(
+					JSON.stringify({
+						error: 'error checking safe browsing api - ' + err,
+					}),
+					{ status: 503, headers },
+				)
 			}
 		}
 
@@ -92,24 +117,32 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 
 		// if succesfully added, respond with 201, otherwise fail with 400
 		if (added) {
-      if (config.get('env') !== 'production') {
-        console.log('shorten: successfully shortened url')
-      }
+			if (config.get('env') !== 'production') {
+				console.log('shorten: successfully shortened url')
+			}
 
-			return new Response(JSON.stringify(shortcut), { status: 201, headers })
+			return new Response(JSON.stringify(shortcut), {
+				status: 201,
+				headers,
+			})
 		} else {
-      if (config.get('env') !== 'production') {
-        console.log('shorten: failed to create shortened url')
-      }
+			if (config.get('env') !== 'production') {
+				console.log('shorten: failed to create shortened url')
+			}
 
-			return new Response(JSON.stringify({ error: 'failed to create shortcut' }), { status: 400, headers })
+			return new Response(
+				JSON.stringify({ error: 'failed to create shortcut' }),
+				{ status: 400, headers },
+			)
 		}
 	} else {
-      if (config.get('env') !== 'production') {
-        console.log('shorten: shortened url already exists')
-      }
+		if (config.get('env') !== 'production') {
+			console.log('shorten: shortened url already exists')
+		}
 
-		return new Response(JSON.stringify({ error: 'already exists' }), { status: 422, headers })
+		return new Response(JSON.stringify({ error: 'already exists' }), {
+			status: 422,
+			headers,
+		})
 	}
 }
-

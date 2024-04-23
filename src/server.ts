@@ -4,7 +4,6 @@ import { handleHome, handleTroll } from './handlers/main.ts'
 import { handleShorten } from './handlers/shorten.ts'
 import { handleShortcut } from './handlers/shortcut.ts'
 
-
 // server handler function
 export const handler = async (request: Request): Promise<Response> => {
 	// different handlers for different endpoints

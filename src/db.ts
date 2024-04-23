@@ -1,8 +1,8 @@
-import { Pool } from 'https://deno.land/x/postgres@v0.19.3/mod.ts';
+import { Pool } from 'https://deno.land/x/postgres@v0.19.3/mod.ts'
 
-import { config } from './config.ts';
+import { config } from './config.ts'
 
-import { Redirect } from './types.ts';
+import { Redirect } from './types.ts'
 
 // initialization
 const pool = new Pool(
@@ -15,11 +15,11 @@ const pool = new Pool(
 		port: config.get('db.port'),
 	},
 	config.get('db.connections'),
-);
+)
 
 {
 	// connect to the database, create the table if it doesn't exist
-	using client = await pool.connect();
+	using client = await pool.connect()
 	await client.queryObject(
 		`CREATE TABLE IF NOT EXISTS redirects (
       "from" TEXT PRIMARY KEY,
@@ -27,44 +27,44 @@ const pool = new Pool(
       key TEXT default '',
       timestamp timestamp default current_timestamp
     )`,
-	);
+	)
 }
 
 // get a shortcut by its "from" value
 export const getShortcut = async (
 	from: string,
 ): Promise<Redirect | undefined> => {
-	using client = await pool.connect();
+	using client = await pool.connect()
 	const { rows } = await client.queryObject<
 		Redirect
-	>`SELECT "from", "to" FROM redirects WHERE "from" = ${from}`;
+	>`SELECT "from", "to" FROM redirects WHERE "from" = ${from}`
 
-	if (rows.length > 0) return rows[0];
-};
+	if (rows.length > 0) return rows[0]
+}
 
 // add a new shortcut to the database
 export const addShortcut = async (
 	shortcut: Redirect,
 ): Promise<Redirect | undefined> => {
-	const existing = await getShortcut(shortcut.from);
+	const existing = await getShortcut(shortcut.from)
 	if (!existing) {
-		using client = await pool.connect();
+		using client = await pool.connect()
 		const { rows } = await client.queryObject<
 			Redirect
-		>`INSERT INTO redirects ("from", "to") VALUES (${shortcut.from}, ${shortcut.to}) RETURNING "from", "to"`;
+		>`INSERT INTO redirects ("from", "to") VALUES (${shortcut.from}, ${shortcut.to}) RETURNING "from", "to"`
 
-		if (rows.length > 0) return rows[0];
+		if (rows.length > 0) return rows[0]
 	}
-};
+}
 
 // update a shortcut in the database
 export const changeShortcut = async (
 	shortcut: Redirect,
 ): Promise<Redirect | undefined> => {
-	using client = await pool.connect();
+	using client = await pool.connect()
 	const { rows } = await client.queryObject<
 		Redirect
-	>`UPDATE redirects SET "to" = ${shortcut.to} WHERE "from" = ${shortcut.from} RETURNING "from", "to"`;
+	>`UPDATE redirects SET "to" = ${shortcut.to} WHERE "from" = ${shortcut.from} RETURNING "from", "to"`
 
-	if (rows.length > 0) return rows[0];
-};
+	if (rows.length > 0) return rows[0]
+}

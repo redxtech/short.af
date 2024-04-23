@@ -1,4 +1,4 @@
-import convict from 'npm:convict';
+import convict from 'npm:convict'
 
 export const config = convict({
 	env: {
@@ -36,13 +36,13 @@ export const config = convict({
 			env: 'DB_PORT',
 			arg: 'db-port',
 		},
-    connections: {
-      doc: 'Number of connections the pool can have',
-      format: Number,
-      default: 20,
-      env: 'DB_CONNECTIONS',
-      arg: 'db-connections',
-    },
+		connections: {
+			doc: 'Number of connections the pool can have',
+			format: Number,
+			default: 20,
+			env: 'DB_CONNECTIONS',
+			arg: 'db-connections',
+		},
 		name: {
 			doc: 'Database name',
 			format: String,
@@ -65,6 +65,6 @@ export const config = convict({
 			arg: 'db-pass',
 		},
 	},
-});
+})
 
-config.loadFile(Deno.cwd() + '/yoinked.config.json');
+config.loadFile(Deno.cwd() + '/yoinked.config.json')
