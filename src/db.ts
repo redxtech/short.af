@@ -1,48 +1,70 @@
-import { InsertOneResult, MongoClient } from "npm:mongodb";
+import { Pool } from 'https://deno.land/x/postgres@v0.19.3/mod.ts';
+
 import { config } from './config.ts';
 
-import { Redirect } from "./types.ts";
+import { Redirect } from './types.ts';
 
 // initialization
-const connectURL = config.get('db.url')
-  ? config.get('db.url')
-  : `mongodb://${config.get('db.username')}:${config.get('db.password')}@${
-    config.get('db.host')}:${config.get('db.port').toString()}`
+const pool = new Pool(
+	{
+		applicationName: 'yoinked',
+		user: config.get('db.username'),
+		password: config.get('db.password'),
+		database: config.get('db.name'),
+		hostname: config.get('db.host'),
+		port: config.get('db.port'),
+	},
+	config.get('db.connections'),
+);
 
-if (!config.get('db.url') && !config.get('db.host')) {
-  throw Error('database url or hostname required')
+{
+	// connect to the database, create the table if it doesn't exist
+	using client = await pool.connect();
+	await client.queryObject(
+		`CREATE TABLE IF NOT EXISTS redirects (
+      "from" TEXT PRIMARY KEY,
+      "to" TEXT,
+      key TEXT default '',
+      timestamp timestamp default current_timestamp
+    )`,
+	);
 }
 
-if (config.get('env') !== 'production') {
-  console.log(`db connect url: ${connectURL}`)
-}
+// get a shortcut by its "from" value
+export const getShortcut = async (
+	from: string,
+): Promise<Redirect | undefined> => {
+	using client = await pool.connect();
+	const { rows } = await client.queryObject<
+		Redirect
+	>`SELECT "from", "to" FROM redirects WHERE "from" = ${from}`;
 
-const client = new MongoClient(connectURL);
-await client.connect();
-const db = client.db(config.get('db.name'));
-const redirects = db.collection<Redirect>('redirects');
+	if (rows.length > 0) return rows[0];
+};
 
-// query the database for a shortcut
-export const getShortcut = async (shortcut: string): Promise<Redirect | undefined> => {
-	const result = await redirects.findOne({ from: shortcut })
-	if (result) {
-		return result
-	}
-}
-
-// add a shortcut to the database
-export const addShortcut = async (shortcut: Redirect): Promise<InsertOneResult<Redirect> | undefined> => {
-	const existing = await redirects.findOne({ from: shortcut.from })
+// add a new shortcut to the database
+export const addShortcut = async (
+	shortcut: Redirect,
+): Promise<Redirect | undefined> => {
+	const existing = await getShortcut(shortcut.from);
 	if (!existing) {
-		return await redirects.insertOne(shortcut)
-	}
-}
+		using client = await pool.connect();
+		const { rows } = await client.queryObject<
+			Redirect
+		>`INSERT INTO redirects ("from", "to") VALUES (${shortcut.from}, ${shortcut.to}) RETURNING "from", "to"`;
 
-// change a shortcut in the database
-export const changeShortcut = async (shortcut: Redirect): Promise<Redirect | undefined> => {
-	const update = await redirects.updateOne({ from: shortcut.from }, { $set: { to: shortcut.to } })
-	if (update) {
-		return await getShortcut(shortcut.from)
+		if (rows.length > 0) return rows[0];
 	}
-}
+};
 
+// update a shortcut in the database
+export const changeShortcut = async (
+	shortcut: Redirect,
+): Promise<Redirect | undefined> => {
+	using client = await pool.connect();
+	const { rows } = await client.queryObject<
+		Redirect
+	>`UPDATE redirects SET "to" = ${shortcut.to} WHERE "from" = ${shortcut.from} RETURNING "from", "to"`;
+
+	if (rows.length > 0) return rows[0];
+};

@@ -22,27 +22,27 @@ export const config = convict({
 		arg: 'safe-browsing-key',
 	},
 	db: {
-		url: {
-			doc: 'Mongo connection URL',
-			format: String,
-			default: undefined,
-			env: 'DB_URL',
-			arg: 'db-url',
-		},
 		host: {
 			doc: 'Database host name/IP',
 			format: '*',
-			default: undefined,
+			default: 'localhost',
 			env: 'DB_HOST',
 			arg: 'db-host',
 		},
 		port: {
 			doc: 'The port to connect to the database with',
 			format: 'port',
-			default: 27017,
+			default: 5432,
 			env: 'DB_PORT',
 			arg: 'db-port',
 		},
+    connections: {
+      doc: 'Number of connections the pool can have',
+      format: Number,
+      default: 20,
+      env: 'DB_CONNECTIONS',
+      arg: 'db-connections',
+    },
 		name: {
 			doc: 'Database name',
 			format: String,

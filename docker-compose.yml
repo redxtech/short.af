@@ -10,16 +10,15 @@ services:
       - db
     volumes:
       - ./yoinked.config.json:/app/yoinked/yoinked.config.json
-    environment:
-      DB_URL: 'mongodb://yoinked:yoinked@db:27017'
   db:
-    image: docker.io/mongo
-    container_name: yoinked_mongo
+    image: docker.io/postgres
+    container_name: yoinked_postgres
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: yoinked
-      MONGO_INITDB_ROOT_PASSWORD: yoinked
+      POSTGRES_USER: yoinked
+      POSTGRES_PASSWORD: yoinked
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - 27017:27017
+      - 5432:5432
     volumes:
-      - ./data:/data/db
+      - ./data:/var/lib/postgresql/data
