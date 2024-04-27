@@ -33,6 +33,7 @@ spec:
                 name: google-safe-browsing
                 key: api_key
           image: docker.super.fish/gabe/short-af
+          imagePullPolicy: Always
           name: shortaf
           ports:
             - containerPort: 8080
