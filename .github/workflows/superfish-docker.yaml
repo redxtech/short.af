@@ -6,6 +6,7 @@ on:
 env:
   DOCKER_USERNAME: robot$gabe+ci
   NAME: short-af
+  REPO: gabe
 permissions:
   contents: read
 jobs:
@@ -25,12 +26,12 @@ jobs:
         run: |-
           DOCKER_BUILDKIT=1 docker build \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
-            --cache-from "docker.super.fish/gabe/$NAME:latest" \
-            --tag "docker.super.fish/gabe/$NAME:$GITHUB_SHA" \
-            --tag "docker.super.fish/gabe/$NAME:latest" \
+            --cache-from "docker.super.fish/$REPO/$NAME:latest" \
+            --tag "docker.super.fish/$REPO/$NAME:$GITHUB_SHA" \
+            --tag "docker.super.fish/$REPO/$NAME:latest" \
             .
 
       - name: Publish
         run: |-
-          docker push "docker.super.fish/gabe/$NAME:latest" && \
-          docker push "docker.super.fish/gabe/$NAME:$GITHUB_SHA"
+          docker push "docker.super.fish/$REPO/$NAME:latest" && \
+          docker push "docker.super.fish/$REPO/$NAME:$GITHUB_SHA"
