@@ -9,7 +9,9 @@ export const handler = async (request: Request): Promise<Response> => {
 	// different handlers for different endpoints
 	const url = new URL(request.url)
 
-	if (url.pathname === '/') {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { headers: { 'Access-Control-Allow-Origin': '*' } })
+  } else if (url.pathname === '/') {
 		// serve a simple homepage
 		return handleHome()
 	} else if (request.method === 'POST' && url.pathname === '/shorten') {

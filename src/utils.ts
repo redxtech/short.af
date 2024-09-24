@@ -9,6 +9,7 @@ const genCharset =
 // predefined headers
 export const headers = {
 	'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
 }
 export const htmlHeaders = {
 	'Content-Type': 'text/html; charset=utf-8',
