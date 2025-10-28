@@ -1,7 +1,7 @@
-// take a url (/expand/:shortcut) and return the destination url
+// take a url (/api/expand/:shortcut) and return the destination url
 export const expand = async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
 	const url = new URL(request.url)
-	const shortcut = url.pathname.split('/')[2]
+	const shortcut = url.pathname.split('/')[3]
 	const destination = await env.REDIRECTS.get(shortcut)
 
 	if (destination) {

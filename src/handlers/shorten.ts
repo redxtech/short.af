@@ -1,7 +1,7 @@
 import { randomString, checkExists, allowedCharset, isValidHttpUrl } from "../utils";
 import { checkSafeBrowsing } from "../safeBrowsing";
 
-// shorten urls POSTed to /shorten
+// shorten urls POSTed to /api/shorten
 export const shorten = async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
 	const body = await request.json() as { from: string, dest: string }
 
