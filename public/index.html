@@ -30,9 +30,9 @@
 			<div id="form" class="mx-auto max-w-3xl">
 				<div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 					<div class="sm:col-span-6">
-						<label for="to" class="block font-medium text-gray-700">destination</label>
+						<label for="dest" class="block font-medium text-gray-700">destination</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
-							<input type="url" name="to" id="to" placeholder="https://example.com" class="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+							<input type="url" name="dest" id="dest" placeholder="https://example.com" class="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
 						</div>
 					</div>
 				</div>
@@ -113,7 +113,7 @@
 					</p>
 					<h4 class="text-base"><code>POST /shorten</code></h4>
 					<p class="my-2 text-slate-500">
-						the <code>/shorten</code> endpoint takes two parameters: <code>{from, to}</code>. omitting <code>from</code> will allow the server to generate a random shortcut for the url.
+						the <code>/shorten</code> endpoint takes two parameters: <code>{from, dest}</code>. omitting <code>from</code> will allow the server to generate a random shortcut for the url.
 						this will return the shortcut object with a 201 status if sucessful, a 403 if the url is flagged as malicious, 422 if the shortcut already exists, and 400 for any other errors.
 					</p>
 				</div>
@@ -126,8 +126,8 @@
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
         // focus form on pageload
-        const toInput = document.getElementById('to')
-        toInput.focus()
+        const destInput = document.getElementById('dest')
+        destInput.focus()
 
         // set from label to current host
         document.getElementById('from-label').innerText = window.location.host + '/'
@@ -136,7 +136,7 @@
 				const submitForm = async () => {
 					// get data from the page
 					const from = document.getElementById('from').value
-          const to = toInput.value
+          const dest = destInput.value
 
 					// get page elements for later use
 					const spinner = document.getElementById('spinner')
@@ -150,7 +150,7 @@
 					failureBox.classList.add('hidden')
 
 					// make sure destination isn't left blank
-					if (!to) {
+					if (!dest) {
 						error.innerText = 'destination can\'t be left blank'
 						failureBox.classList.remove('hidden')
 						return
@@ -160,7 +160,7 @@
 					let validURL = true
 					let url
 					try {
-						url = new URL(to)
+						url = new URL(dest)
 					} catch {
 						validURL = false
 					} finally {
@@ -185,7 +185,7 @@
 							headers: {
 								'Content-Type': 'application/json'
 							},
-							body: JSON.stringify({ from, to })
+							body: JSON.stringify({ from, dest })
 						})
 
 						const resp = await req.json()
@@ -203,7 +203,7 @@
 							successBox.classList.remove('hidden')
 						} else {
 							// fill out the span with the error message
-							error.innerText = `${resp.error} (${req.status})`
+							error.innerText = `${resp.message} (${req.status})`
 
 							// show the failure box
 							failureBox.classList.remove('hidden')
