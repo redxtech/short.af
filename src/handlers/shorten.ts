@@ -41,7 +41,7 @@ export const shorten = async (request: Request, env: Env, ctx: ExecutionContext)
 	}
 
 	// fail on special cases (length < 3, or starts with known strings)
-	if (shortcut.from.length < 3 || [ 'expand', 'shorten', '.htaccess', 'wp-login.php' ].some(from => shortcut.from.startsWith(from))) {
+	if (shortcut.from.length < 3 || [ 'api', 'expand', 'shorten', '.htaccess', 'wp-login.php' ].some(from => shortcut.from.startsWith(from))) {
 		return new Response(
 			JSON.stringify({ status: 'error', message: 'shortcut not allowed' }),
 			{ status: 403, headers: { 'content-type': 'application/json' } }

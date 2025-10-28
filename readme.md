@@ -18,10 +18,12 @@ will show a simple homepage with a form to create shortcuts
 
 will 302 redirect you to the destination if it exists, and 404 otherwise
 
-### `GET /expand/:from`
+### `GET /api/expand/:from`
 
-will show the destination in plaintext if it exists, and 404 otherwise
+will return the destination in json `{from, dest}` if it exists, and 404 otherwise
 
-### `POST /shorten`: `{from, to}`
+### `POST /api/shorten`: `{from, dest}`
 
-will create a shortened link, will respond with 201 on successful add, 403 if it's a malicious url, 422 if a link with that same name already exists, and 400 for other failures
+will create a shortened link, will respond with 201 on successful add, 403 if it's a malicious url, 422 if a link with that same name already exists, and 400 for other failures.
+
+successful responses will have a body of `{from, dest}`

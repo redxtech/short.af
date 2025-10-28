@@ -11,9 +11,9 @@ export default {
 		// handle special cases
 		if (request.method === 'OPTIONS') {
 			return new Response(null, { headers: { 'Access-Control-Allow-Origin': '*' } })
-		} else if (path === '/shorten' && request.method === 'POST') {
+		} else if (path === '/api/shorten' && request.method === 'POST') {
 			return shorten(request, env, ctx)
-		} else if (path.startsWith('/expand/')) {
+		} else if (path.startsWith('/api/expand/')) {
 			return expand(request, env, ctx)
 		} else if (['/.htaccess', '/wp-login.php'].includes(path)) {
 			return troll()
