@@ -5,6 +5,11 @@
 	"compatibility_date": "2025-10-24",
 	"observability": { "enabled": true },
 	"placement": { "mode": "smart" },
+	"env": {
+		"staging": {
+			"kv_namespaces": [ { "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0", "remote": true } ],
+		},
+	},
 	"kv_namespaces": [ { "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0" } ],
 	"assets": {
 		"directory": "./public/",
