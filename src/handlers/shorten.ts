@@ -58,7 +58,11 @@ export const shorten = async (request: Request, env: Env, ctx: ExecutionContext)
 
 	try {
 		// set the shortcut in the kv namespace
-		await env.REDIRECTS.put(shortcut.from, shortcut.dest)
+		await env.REDIRECTS.put(shortcut.from, shortcut.dest, {
+			metadata: {
+				createdAt: new Date().toISOString(),
+			},
+		})
 
 		return new Response(
 			JSON.stringify({ status: 'success', ...shortcut }),
