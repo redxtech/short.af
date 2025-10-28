@@ -1,33 +1,21 @@
-// handler for shorten endpoint
+import { randomString, checkExists, allowedCharset, isValidHttpUrl } from "../utils";
+import { checkSafeBrowsing } from "../safeBrowsing";
 
-import { config } from '../config.ts'
-import { addShortcut, getShortcut } from '../db.ts'
-import {
-	allowedCharset,
-	headers,
-	isValidHttpUrl,
-	randomString,
-} from '../utils.ts'
+// shorten urls POSTed to /shorten
+export const shorten = async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
+	const body = await request.json() as { from: string, dest: string }
 
-// handle POST /shorten
-export const handleShorten = async (request: Request): Promise<Response> => {
-	// get the request data
-	const body = await request.json()
 	const shortcut = {
-		to: body.to,
 		from: body.from,
+		dest: body.dest
 	}
 
-	// if from isn't valid, generate a random string for it
+	// if the from field is blank, generate a random shortcut
 	while (!shortcut.from) {
-		const newFrom = randomString(5)
+		const newFrom = randomString(6)
 
-		// check that the random string doesn't already exist as a shortcut
-		const existing = await getShortcut(newFrom)
-
-		// if it doesn't already exist, use it, otherwise repeat the loop
-		if (!existing) {
-			shortcut.from = newFrom
+		if (!(await checkExists(env, newFrom))) {
+			shortcut.from = newFrom;
 		}
 	}
 
@@ -37,112 +25,49 @@ export const handleShorten = async (request: Request): Promise<Response> => {
 	)
 
 	// if either are invalid, return 400
-	if (!validFrom || !isValidHttpUrl(shortcut.to)) {
-		if (config.get('env') !== 'production') {
-			console.log('shorten: invalid characters or url')
-		}
-
+	if (!validFrom || !isValidHttpUrl(shortcut.dest)) {
 		return new Response(
-			JSON.stringify({ error: 'invalid characters or url' }),
-			{ status: 400, headers },
+			JSON.stringify({ status: 'error', message: 'invalid characters or url' }),
+			{ status: 400, headers: { 'content-type': 'application/json' } }
 		)
 	}
 
-	// test if shortcut exists
-	const redirect = await getShortcut(shortcut.from)
+	// test if the shortcut already exists
+	if (await checkExists(env, shortcut.from)) {
+		return new Response(
+			JSON.stringify({ status: 'error', message: 'shortcut already exists' }),
+			{ status: 422, headers: { 'content-type': 'application/json' } }
+		)
+	}
 
-	// if the redirect doesn't already exist, create it, otherwise throw error
-	if (!redirect && !shortcut.from.startsWith(`expand`)) {
-		// test if the url is sketchy before adding it
-		if (config.get('googleSafeBrowsingKey')) {
-			try {
-				const safeTest = await fetch(
-					`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${
-						config.get('googleSafeBrowsingKey')
-					}`,
-					{
-						method: 'POST',
-						headers,
-						body: JSON.stringify({
-							client: {
-								clientId: 'shortaf',
-								clientVersion: '1.0.0',
-							},
-							threatInfo: {
-								threatTypes: [
-									'MALWARE',
-									'POTENTIALLY_HARMFUL_APPLICATION',
-									'SOCIAL_ENGINEERING',
-									'UNWANTED_SOFTWARE',
-								],
-								platformTypes: ['ANY_PLATFORM'],
-								threatEntryTypes: ['URL'],
-								threatEntries: [{ url: shortcut.to }],
-							},
-						}),
-					},
-				)
-				const result = await safeTest.json()
+	// fail on special cases (length < 3, or starts with known strings)
+	if (shortcut.from.length < 3 || [ 'expand', 'shorten', '.htaccess', 'wp-login.php' ].some(from => shortcut.from.startsWith(from))) {
+		return new Response(
+			JSON.stringify({ status: 'error', message: 'shortcut not allowed' }),
+			{ status: 403, headers: { 'content-type': 'application/json' } }
+		)
+	}
 
-				// if there's a match, return an error and don't shorten the url
-				if (result.matches) {
-					if (config.get('env') !== 'production') {
-						console.log('shorten: malicious url detected')
-					}
+	// check if the destination is safe (if google safe browsing key is set)
+	if (env.GOOGLE_SAFE_BROWSING_KEY && !(await checkSafeBrowsing(env, shortcut.dest))) {
+		return new Response(
+			JSON.stringify({ status: 'error', message: 'destination is unsafe' }),
+			{ status: 403, headers: { 'content-type': 'application/json' } }
+		)
+	}
 
-					return new Response(
-						JSON.stringify({
-							error: 'malicious url - ' +
-								result?.matches[0]?.threatType,
-						}),
-						{ status: 403, headers },
-					)
-				}
-			} catch (err) {
-				if (config.get('env') !== 'production') {
-					console.log('shorten: error checking safe browsing api')
-				}
+	try {
+		// set the shortcut in the kv namespace
+		await env.REDIRECTS.put(shortcut.from, shortcut.dest)
 
-				return new Response(
-					JSON.stringify({
-						error: 'error checking safe browsing api - ' + err,
-					}),
-					{ status: 503, headers },
-				)
-			}
-		}
-
-		// check if it exists already
-		const added = await addShortcut(shortcut)
-
-		// if succesfully added, respond with 201, otherwise fail with 400
-		if (added) {
-			if (config.get('env') !== 'production') {
-				console.log('shorten: successfully shortened url')
-			}
-
-			return new Response(JSON.stringify(shortcut), {
-				status: 201,
-				headers,
-			})
-		} else {
-			if (config.get('env') !== 'production') {
-				console.log('shorten: failed to create shortened url')
-			}
-
-			return new Response(
-				JSON.stringify({ error: 'failed to create shortcut' }),
-				{ status: 400, headers },
-			)
-		}
-	} else {
-		if (config.get('env') !== 'production') {
-			console.log('shorten: shortened url already exists')
-		}
-
-		return new Response(JSON.stringify({ error: 'already exists' }), {
-			status: 422,
-			headers,
-		})
+		return new Response(
+			JSON.stringify({ status: 'success', ...shortcut }),
+			{ status: 201, headers: { 'content-type': 'application/json' } }
+		)
+	} catch (err) {
+		return new Response(
+			JSON.stringify({ status: 'error', message: 'failed to set shortcut' }),
+			{ status: 500, headers: { 'content-type': 'application/json' } }
+		)
 	}
 }

@@ -1,7 +1,0 @@
-{
-  "lspconfig": {
-    "tsserver": false,
-    "eslint": false,
-    "tailwindcss": false
-  }
-}

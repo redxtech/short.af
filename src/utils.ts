@@ -6,15 +6,6 @@ export const allowedCharset =
 const genCharset =
 	'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789-_+.'
 
-// predefined headers
-export const headers = {
-	'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': '*',
-}
-export const htmlHeaders = {
-	'Content-Type': 'text/html; charset=utf-8',
-}
-
 // check if a string is a valid url
 export const isValidHttpUrl = (str: string) => {
 	let url
@@ -41,3 +32,7 @@ export const randomString = (length: number): string => {
 
 	return stringBuilder.join('')
 }
+
+// check if a shortcut exists by checking if it's in the kv namespace
+export const checkExists = async (env: Env, shortcut: string): Promise<boolean> => (await env.REDIRECTS.get(shortcut)) !== null
+

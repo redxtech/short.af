@@ -1,8 +1,0 @@
-.gitignore
-yoinked.config.json
-docker-compose.yml
-readme.md
-data
-db
-.vscode
-.git

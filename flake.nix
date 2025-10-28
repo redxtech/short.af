@@ -1,51 +1,52 @@
 {
-  description = "Simple URL shortener";
+  description = "simple, self-hosted url shortener";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-schemas.url =
-      "https://flakehub.com/f/DeterminateSystems/flake-schemas/*.tar.gz";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  nixConfig = {
-    extra-trusted-public-keys =
-      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
-    extra-substituters = "https://devenv.cachix.org";
-  };
-
-  outputs = inputs@{ nixpkgs, flake-parts, devenv, ... }:
+  outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # systems to enable support for
       systems =
-        [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" "aarch64-linux" ];
-
-      imports = [ inputs.devenv.flakeModule ];
-
-      flake.schemas = inputs.flake-schemas.schemas;
+        [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
       perSystem = { config, self', inputs', pkgs, system, ... }: {
-        devenv.shells.default = {
-          name = "yoinked";
+        packages = {
+          short-af = pkgs.stdenv.mkDerivation {
+            pname = "short-af";
+            version = "0.0.0";
 
-          packages = with pkgs; [ git nixpkgs-fmt ];
+            src = ./.;
 
-          # languages to enable
-          languages = {
-            deno.enable = true;
-            javascript.enable = true;
-            typescript.enable = true;
+            dontBuild = true;
+
+            installPhase = ''
+              mkdir -p $out/share/short-af
+              cp -r $src/public/index.html $out/share/short-af
+            '';
           };
 
-          # dotenv.enable = true;
-
-          # scripts that will be available in the shell
-          scripts.run.exec = "deno task start";
-
-          # processes to run with `devenv up`
-          processes.web.exec = "deno task start";
+          default = self'.packages.short-af;
         };
+
+        apps = {
+          short-af = {
+            type = "app";
+            program = pkgs.writeShellApplication {
+              name = "short-af";
+              runtimeInputs = with pkgs; [ nodejs wrangler ];
+              text = ''
+                wrangler dev
+              '';
+            };
+          };
+
+          default = self'.apps.short-af;
+        };
+
+        devShells.default =
+          pkgs.mkShell { packages = with pkgs; [ nodejs wrangler ]; };
       };
     };
 }

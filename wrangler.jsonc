@@ -1,0 +1,18 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "short-af",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-10-24",
+	"observability": { "enabled": true },
+	"placement": { "mode": "smart" },
+	"kv_namespaces": [ { "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0" } ],
+	"assets": {
+		"directory": "./public/",
+		"binding": "ASSETS",
+		"run_worker_first": [
+			"/shorten",
+			"/expand/*"
+		]
+	},
+	// "vars": { "GOOGLE_SAFE_BROWSING_KEY": "" },
+}
