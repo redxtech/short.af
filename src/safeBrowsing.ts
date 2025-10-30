@@ -18,6 +18,7 @@ export const checkSafeBrowsing = async (env: Env, dest: string): Promise<boolean
 							'POTENTIALLY_HARMFUL_APPLICATION',
 							'SOCIAL_ENGINEERING',
 							'UNWANTED_SOFTWARE',
+							'THREAT_TYPE_UNSPECIFIED'
 						],
 						platformTypes: ['ANY_PLATFORM'],
 						threatEntryTypes: ['URL'],
