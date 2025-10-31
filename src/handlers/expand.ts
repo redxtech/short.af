@@ -5,14 +5,14 @@ export const expand = async (request: Request, env: Env, ctx: ExecutionContext):
 	const destination = await env.REDIRECTS.get(shortcut)
 
 	if (destination) {
-		return new Response(
-			JSON.stringify({ status: 'success', from: shortcut, dest: destination }),
-			{ status: 200, headers: { 'content-type': 'application/json' } }
-		)
+		return new Response(JSON.stringify({ status: 'success', from: shortcut, dest: destination }), {
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+		})
 	}
 
-	return new Response(
-		JSON.stringify({ status: 'error', message: 'no destination found for shortcut' }),
-		{ status: 404, headers: { 'content-type': 'application/json' } }
-	)
+	return new Response(JSON.stringify({ status: 'error', message: 'no destination found for shortcut' }), {
+		status: 404,
+		headers: { 'content-type': 'application/json' },
+	})
 }

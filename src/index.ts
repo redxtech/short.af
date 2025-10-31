@@ -1,7 +1,7 @@
-import { expand } from "./handlers/expand"
-import { shortcut } from "./handlers/shortcut"
-import { shorten } from "./handlers/shorten"
-import { troll } from "./handlers/troll"
+import { expand } from './handlers/expand'
+import { shortcut } from './handlers/shortcut'
+import { shorten } from './handlers/shorten'
+import { troll } from './handlers/troll'
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {

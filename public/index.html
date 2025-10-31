@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 	<head>
 		<title>short af baby!</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<script src="/tailwind.js"></script>
 		<style>
 			.animate-spin {
@@ -33,7 +33,13 @@
 					<div class="sm:col-span-6">
 						<label for="dest" class="block font-medium text-gray-700">destination</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
-							<input type="url" name="dest" id="dest" placeholder="https://example.com" class="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+							<input
+								type="url"
+								name="dest"
+								id="dest"
+								placeholder="https://example.com"
+								class="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+							/>
 						</div>
 					</div>
 				</div>
@@ -41,17 +47,41 @@
 					<div class="sm:col-span-6">
 						<label for="from" class="block font-medium text-gray-700">shortcut</label>
 						<div class="mt-1 flex rounded-md shadow-sm">
-							<span id="from-label" class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500">short.af/</span>
-							<input type="text" name="from" id="from" placeholder="leave blank for random value" class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+							<span
+								id="from-label"
+								class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-gray-500"
+								>short.af/</span
+							>
+							<input
+								type="text"
+								name="from"
+								id="from"
+								placeholder="leave blank for random value"
+								class="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+							/>
 						</div>
 					</div>
 				</div>
 				<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 					<div class="sm:col-span-6">
-						<button type="submit" id="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-500 py-2 px-4 font-medium text-white shadow-sm hover:bg-indigo-600 ease-in-out duration-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2">
-							<svg id="spinner" class="animate-spin hidden -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+						<button
+							type="submit"
+							id="submit"
+							class="inline-flex justify-center rounded-md border border-transparent bg-indigo-500 py-2 px-4 font-medium text-white shadow-sm hover:bg-indigo-600 ease-in-out duration-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+						>
+							<svg
+								id="spinner"
+								class="animate-spin hidden -ml-1 mr-3 h-5 w-5 text-white"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
 								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
 							</svg>
 							create shortcut
 						</button>
@@ -60,7 +90,10 @@
 				<div id="success-box" class="hidden rounded-md bg-green-50 p-4 my-6">
 					<div class="flex">
 						<div class="flex-1 md:flex md:justify-between">
-							<p class="text-green-700">your shortened link has been created & copied to clipboard: <a id="success-url" href="#" target="_blank" class="font-bold underline">#</a></p>
+							<p class="text-green-700">
+								your shortened link has been created & copied to clipboard:
+								<a id="success-url" href="#" target="_blank" class="font-bold underline">#</a>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -74,7 +107,10 @@
 			</div>
 		</div>
 		<div class="absolute bottom-2 left-2">
-			<div id="q" class="bg-gray-200 hover:bg-gray-300 ease-in-out duration-100 cursor-pointer rounded-full h-10 w-10 flex justify-center items-center">
+			<div
+				id="q"
+				class="bg-gray-200 hover:bg-gray-300 ease-in-out duration-100 cursor-pointer rounded-full h-10 w-10 flex justify-center items-center"
+			>
 				<span class="font-bold text-2xl text-gray-700">?</span>
 			</div>
 		</div>
@@ -83,23 +119,31 @@
 				<h2 class="text-2xl">about short.af</h2>
 				<div class="my-4 text-slate-500">
 					<p class="my-2">
-						short.af is a simple url shortener that was initially inspired by <a href="http://web.archive.org/web/20180118090335/http://short.af/" target="_blank" class="underline focus:outline-none">short.af (2016)</a>.
-						i wanted to make my urls short as f*&k, so after years of living with long-ass links, i finally bought this domain name and made something with it.
+						short.af is a simple url shortener that was initially inspired by
+						<a href="http://web.archive.org/web/20180118090335/http://short.af/" target="_blank" class="underline focus:outline-none"
+							>short.af (2016)</a
+						>. i wanted to make my urls short as f*&k, so after years of living with long-ass links, i finally bought this domain name and
+						made something with it.
 					</p>
 					<p class="my-2">
-						the source is available <a href="https://github.com/redxtech/short.af" target="_blank" class="underline">on github</a>, you're welcome to contribute changes, or get help with self-hosting.
+						the source is available <a href="https://github.com/redxtech/short.af" target="_blank" class="underline">on github</a>, you're
+						welcome to contribute changes, or get help with self-hosting.
 					</p>
 					<p>
-						all urls are checked against <a href="https://developers.google.com/safe-browsing/v4/advisory" target="_blank" class="underline">google's safe browsing api</a>
-						before shortening in order to protect users against malware & phishing sites.
-						if you wish to disable this, you can host your own instance of this software and leave the api key blank in the configuration.
+						all urls are checked against
+						<a href="https://developers.google.com/safe-browsing/v4/advisory" target="_blank" class="underline"
+							>google's safe browsing api</a
+						>
+						before shortening in order to protect users against malware & phishing sites. if you wish to disable this, you can host your own
+						instance of this software and leave the api key blank in the configuration.
 					</p>
 				</div>
 				<h2 class="text-2xl">about me</h2>
 				<div class="my-4 text-slate-500">
 					<p class="my-2">
 						my name is gabe dunn and i'm a fullstack software developer. you can find more information about me and my projects at either
-						<a href="https://gabedunn.dev" target="_blank" class="underline">my homepage</a> or <a href="https://github.com/redxtech" target="_blank" class="underline">my github</a> page.
+						<a href="https://gabedunn.dev" target="_blank" class="underline">my homepage</a> or
+						<a href="https://github.com/redxtech" target="_blank" class="underline">my github</a> page.
 					</p>
 				</div>
 				<h2 class="text-2xl">api reference</h2>
@@ -110,34 +154,39 @@
 					</p>
 					<h4 class="text-base"><code>GET /api/expand/:shortcut</code></h4>
 					<p class="my-2 text-slate-500">
-					visting <code>/api/expand/:shortcut</code> will return the shortcut object in json (<code>{from, dest}</code>) if a shortcut exists, and 404 if it doesn't exist
+						visting <code>/api/expand/:shortcut</code> will return the shortcut object in json (<code>{from, dest}</code>) if a shortcut
+						exists, and 404 if it doesn't exist
 					</p>
 					<h4 class="text-base"><code>POST /api/shorten</code></h4>
 					<p class="my-2 text-slate-500">
-						the <code>/api/shorten</code> endpoint takes two parameters: <code>{from, dest}</code>. omitting <code>from</code> will allow the server to generate a random shortcut for the url.
-						this will return the shortcut object with a 201 status if sucessful, a 403 if the url is flagged as malicious, 422 if the shortcut already exists, and 400 for any other errors.
+						the <code>/api/shorten</code> endpoint takes two parameters: <code>{from, dest}</code>. omitting <code>from</code> will allow
+						the server to generate a random shortcut for the url. this will return the shortcut object with a 201 status if sucessful, a 403
+						if the url is flagged as malicious, 422 if the shortcut already exists, and 400 for any other errors.
 					</p>
 				</div>
 				<form class="m-0" method="dialog">
-					<button class="inline-flex justify-center rounded-md border border-transparent bg-indigo-500 py-2 px-4 font-medium text-white shadow-sm hover:bg-indigo-600 ease-in-out duration-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2">close</button>
+					<button
+						class="inline-flex justify-center rounded-md border border-transparent bg-indigo-500 py-2 px-4 font-medium text-white shadow-sm hover:bg-indigo-600 ease-in-out duration-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+					>
+						close
+					</button>
 				</form>
 			</div>
-
 		</dialog>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
-        // focus form on pageload
-        const destInput = document.getElementById('dest')
-        destInput.focus()
+				// focus form on pageload
+				const destInput = document.getElementById('dest')
+				destInput.focus()
 
-        // set from label to current host
-        document.getElementById('from-label').innerText = window.location.host + '/'
+				// set from label to current host
+				document.getElementById('from-label').innerText = window.location.host + '/'
 
 				// function to submit the form
 				const submitForm = async () => {
 					// get data from the page
 					const from = document.getElementById('from').value
-          const dest = destInput.value
+					const dest = destInput.value
 
 					// get page elements for later use
 					const spinner = document.getElementById('spinner')
@@ -152,7 +201,7 @@
 
 					// make sure destination isn't left blank
 					if (!dest) {
-						error.innerText = 'destination can\'t be left blank'
+						error.innerText = "destination can't be left blank"
 						failureBox.classList.remove('hidden')
 						return
 					}
@@ -184,21 +233,21 @@
 						const req = await fetch('/api/shorten', {
 							method: 'POST',
 							headers: {
-								'Content-Type': 'application/json'
+								'Content-Type': 'application/json',
 							},
-							body: JSON.stringify({ from, dest })
+							body: JSON.stringify({ from, dest }),
 						})
 
 						const resp = await req.json()
 
 						if (req.status === 201) {
-              const shortUrl = `${window.location.protocol}//${window.location.host}/${resp.from}`
+							const shortUrl = `${window.location.protocol}//${window.location.host}/${resp.from}`
 							// fill out the link with the new link information
 							link.href = '/' + resp.from
 							link.innerText = shortUrl
 
-              // copy url to clipboard
-              navigator.clipboard.writeText(shortUrl)
+							// copy url to clipboard
+							navigator.clipboard.writeText(shortUrl)
 
 							// show the success box
 							successBox.classList.remove('hidden')
@@ -232,7 +281,7 @@
 				})
 
 				// choose a random slogan to display on page load
-				const selectFrom = arr => arr[Math.floor((Math.random() * arr.length))]
+				const selectFrom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 				const blurb = selectFrom([
 					'a simple url shortener',
 					'makes your links short as f*&k!',
@@ -242,12 +291,10 @@
 					'your link but smol',
 					'beep beep boop borp',
 					'hello world!',
-					'help i\'ve been trapped inside a url shortener!'
+					"help i've been trapped inside a url shortener!",
 				])
 				document.getElementById('blurb').innerText = blurb
-
 			})
 		</script>
 	</body>
 </html>
-

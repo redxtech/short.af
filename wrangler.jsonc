@@ -7,17 +7,14 @@
 	"placement": { "mode": "smart" },
 	"env": {
 		"staging": {
-			"kv_namespaces": [ { "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0", "remote": true } ],
+			"kv_namespaces": [{ "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0", "remote": true }],
 		},
 	},
-	"kv_namespaces": [ { "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0" } ],
+	"kv_namespaces": [{ "binding": "REDIRECTS", "id": "83e8596a147f4384a4acaaaed73311a0" }],
 	"assets": {
 		"directory": "./public/",
 		"binding": "ASSETS",
-		"run_worker_first": [
-			"/shorten",
-			"/expand/*"
-		]
+		"run_worker_first": ["/shorten", "/expand/*"],
 	},
 	// "vars": { "GOOGLE_SAFE_BROWSING_KEY": "" },
 }

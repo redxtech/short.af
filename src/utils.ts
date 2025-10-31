@@ -1,10 +1,8 @@
 // some useful functions
 
 // allowed characters for a shortcut
-export const allowedCharset =
-	'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'
-const genCharset =
-	'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789-_+.'
+export const allowedCharset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+.'
+const genCharset = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789-_+.'
 
 // check if a string is a valid url
 export const isValidHttpUrl = (str: string) => {
@@ -18,8 +16,7 @@ export const isValidHttpUrl = (str: string) => {
 }
 
 // random number generator
-export const random = (upTo: number): number =>
-	Math.floor(Math.random() * upTo) + 1
+export const random = (upTo: number): number => Math.floor(Math.random() * upTo) + 1
 
 // generate random string, excluding I & l
 export const randomString = (length: number): string => {
@@ -35,4 +32,3 @@ export const randomString = (length: number): string => {
 
 // check if a shortcut exists by checking if it's in the kv namespace
 export const checkExists = async (env: Env, shortcut: string): Promise<boolean> => (await env.REDIRECTS.get(shortcut)) !== null
-
